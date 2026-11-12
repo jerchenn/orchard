@@ -199,14 +199,14 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 <section class="frame blue" aria-label="Repeat">
   <span class="sign">Draw it a thousand times</span>
   <p class="aux">Keep the strategy and size chosen above. Each draw gives one sample mean. The histogram collects them.</p>
-  <div class="ask">
-    <div class="q">Before you run the draws: with 100 apples in each sample instead of 30, will the sample means spread out more, the same, or less?</div>
-    <div class="choices" id="spreadChoices"><button type="button" class="chip" data-v="wider" aria-pressed="false">more</button><button type="button" class="chip" data-v="same" aria-pressed="false">the same</button><button type="button" class="chip" data-v="narrower" aria-pressed="false">less</button></div>
-    <div class="fb" id="spreadFb">Choose, then run 1,000 draws at 30 apples and again at 100.</div>
-  </div>
   <div class="row"><button type="button" class="btn primary" id="btnRepeat">Draw 1,000 samples</button><button type="button" class="btn" id="btnNormal" aria-pressed="false">Lay the normal curve over</button></div>
   <canvas id="means" width="1000" height="400" aria-label="Histogram of sample means across repeated draws"></canvas>
   <div class="stats" id="repStats"></div>
+  <div class="ask" id="spreadAsk" hidden>
+    <div class="q" id="spreadQ"></div>
+    <div class="choices" id="spreadChoices"><button type="button" class="chip" data-v="wider" aria-pressed="false">more</button><button type="button" class="chip" data-v="same" aria-pressed="false">the same</button><button type="button" class="chip" data-v="narrower" aria-pressed="false">less</button></div>
+    <div class="fb" id="spreadFb"></div>
+  </div>
   <div class="pair">
     <div class="cab cream"><h3>Law of large numbers</h3><p class="aux">One simple random sample grows from 1 apple to 1,000. The running mean settles on the parameter.</p><canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas></div>
     <div class="cab cream"><h3>Central limit theorem</h3><p class="aux">The population of weights is skewed. The sample means are not: across draws they pile up in a bell around the parameter, and the bell narrows as the sample grows, by one over the square root of n.</p><p class="aux">iid: each apple drawn independently from the same population. Trees and neighbours break independence, and the bell changes shape.</p></div>
@@ -372,8 +372,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
   // ---- repeat ----
   const mc=$('means'), mctx=mc.getContext('2d');
-  let means=[], repN=0, repStrat='', showNormal=false, spreadPred=null; const sdByN={};
-  [...$('spreadChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('spreadChoices').children].forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); spreadPred=b.dataset.v; $('spreadFb').textContent='You said '+b.textContent+'. Now draw 1,000 samples at 30 apples, then at 100.'; $('spreadFb').className='fb'; }));
+  let means=[], repN=0, repStrat='', showNormal=false, spreadPred=null, firstN=null, altN=null; const sdByN={};
+  [...$('spreadChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('spreadChoices').children].forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); spreadPred=b.dataset.v; $('spreadFb').textContent='You said '+b.textContent+'. Set the sample size to '+altN+' above and draw 1,000 samples again.'; $('spreadFb').className='fb'; }));
   function renderRepeat(){
     if(!means.length){ histogram(mctx,mc,[],{lo:WMIN,hi:WMAX,bins:60,color:'#4F5D75',note:'sample mean, g'}); statBox('repStats',[]); return; }
     const mm=mean(means), ms=sd(means);
@@ -384,8 +384,9 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     if(revealed) items.push(['bias, g',(mm-MU>=0?'+':'')+(mm-MU).toFixed(2)],['σ/√n, g',(SIG/Math.sqrt(repN)).toFixed(2)]);
     statBox('repStats',items);
     sdByN[repN]=ms;
-    if(spreadPred&&sdByN[30]!==undefined&&sdByN[100]!==undefined){ const narrower=sdByN[100]<sdByN[30]*0.9, same=!narrower&&sdByN[100]<=sdByN[30]*1.1; const truth=narrower?'narrower':(same?'same':'wider'); const word={narrower:'less',same:'the same',wider:'more'};
-      $('spreadFb').textContent='At 30 apples the sd of means was '+sdByN[30].toFixed(2)+' g; at 100 it was '+sdByN[100].toFixed(2)+' g: they spread '+word[truth]+'. '+(spreadPred===truth?'You were right.':'You said '+word[spreadPred]+'.'); $('spreadFb').className='fb '+(spreadPred===truth?'good':'bad'); }
+    if(firstN===null){ firstN=repN; altN=repN<100?100:30; $('spreadQ').textContent='You drew 1,000 samples of '+firstN+' apples. If each sample had '+altN+' apples instead, would the sample means spread out more, the same, or less?'; $('spreadFb').textContent='Choose first, then change the sample size and draw again.'; $('spreadAsk').hidden=false; }
+    if(spreadPred&&sdByN[firstN]!==undefined&&sdByN[altN]!==undefined){ const a=sdByN[firstN], b=sdByN[altN]; const bigger=altN>firstN; const narrower=bigger?b<a*0.9:a<b*0.9, same=!narrower&&Math.abs(a-b)<=0.1*Math.max(a,b); const truth=narrower?'narrower':(same?'same':'wider'); const word={narrower:'less',same:'the same',wider:'more'};
+      $('spreadFb').textContent='At '+firstN+' apples the sd of the means was '+sdByN[firstN].toFixed(2)+' g; at '+altN+' it was '+sdByN[altN].toFixed(2)+' g: they spread '+word[truth]+'. '+(spreadPred===truth?'You were right.':'You said '+word[spreadPred]+'.'); $('spreadFb').className='fb '+(spreadPred===truth?'good':'bad'); }
   }
   $('btnRepeat').addEventListener('click',()=>{ repN=parseInt($('nSize').value,10); repStrat=stratName(); means=[]; for(let k=0;k<1000;k++){ const s=STRAT[$('strategy').value].f(repN); means.push(mean(s.map(i=>apples[i].w))); } renderRepeat(); });
   $('btnNormal').addEventListener('click',()=>{ showNormal=!showNormal; $('btnNormal').setAttribute('aria-pressed',String(showNormal)); if(showNormal&&!revealed){ revealed=true; renderSample(); } renderRepeat(); renderCI(); });

@@ -229,11 +229,6 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     <div class="cab butter"><span class="tag">Parameter</span><div class="big" id="popMean">?<small>population mean, g</small></div><div class="aux" id="errTxt">reveal to compare</div></div>
   </div>
   <div class="row"><button type="button" class="btn" id="btnReveal" aria-pressed="false">Reveal the parameter</button><span class="aux" id="paramTxt">The population mean is hidden.</span></div>
-  <div class="ask">
-    <div class="q">Your turn. The village can afford to weigh 100 apples. Which strategy would you use, and what could still go wrong? Write two or three sentences and copy them to the class board.</div>
-    <textarea id="answer" placeholder="I would use ... because ..."></textarea>
-    <div class="row"><button type="button" class="btn" id="btnCopy">Copy my answer</button><span class="fb" id="copyFb"></span></div>
-  </div>
   <div class="closing"><div class="quote">A probability sample is wrong by chance, and chance shrinks with size. A convenience sample is wrong by design, and size does nothing. The sampling rule decides what the data mean, just as the host does behind the <a class="link" href="https://jerchenn.github.io/monty-hall/">three doors</a>.</div></div>
 </section>
 
@@ -418,11 +413,6 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     else { $('covFb').textContent='Reveal the parameter to count the hits.'; $('covFb').className='fb'; }
   }
   $('btnCI').addEventListener('click',()=>{ const g=parseInt($('covGuess').value,10); covGuess=isFinite(g)?g:null; ciN=parseInt($('nSize').value,10); ciStrat=stratName(); cis=[]; for(let k=0;k<100;k++){ const v=STRAT[$('strategy').value].f(ciN).map(i=>apples[i].w); const m=mean(v), se=sd(v,1)/Math.sqrt(v.length); cis.push([m-1.96*se,m+1.96*se]); } renderCI(); });
-
-  // ---- copy the free-text answer ----
-  $('btnCopy').addEventListener('click',()=>{ const t=$('answer').value.trim(); if(!t){ $('copyFb').textContent='Write an answer first.'; return; }
-    const done=()=>{ $('copyFb').textContent='Copied. Paste it on the class board.'; };
-    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(()=>{ $('answer').select(); $('copyFb').textContent='Select all and copy with the keyboard.'; }); } else { $('answer').select(); $('copyFb').textContent='Select all and copy with the keyboard.'; } });
 
   renderSample(); renderRepeat(); drawLLN(); renderCI();
 })();

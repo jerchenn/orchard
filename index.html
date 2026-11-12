@@ -200,9 +200,9 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   <span class="sign">Draw it a thousand times</span>
   <p class="aux">Keep the strategy and size chosen above. Each draw gives one sample mean. The histogram collects them.</p>
   <div class="ask">
-    <div class="q">Prediction first. If the census taker weighs 100 apples each time instead of 30, the spread of the sample means will be</div>
-    <div class="choices" id="spreadChoices"><button type="button" class="chip" data-v="wider" aria-pressed="false">wider</button><button type="button" class="chip" data-v="same" aria-pressed="false">the same</button><button type="button" class="chip" data-v="narrower" aria-pressed="false">narrower</button></div>
-    <div class="fb" id="spreadFb">Lock in a prediction, then run 30 and 100 and compare the sd of means.</div>
+    <div class="q">Before you run the draws: with 100 apples in each sample instead of 30, will the sample means spread out more, the same, or less?</div>
+    <div class="choices" id="spreadChoices"><button type="button" class="chip" data-v="wider" aria-pressed="false">more</button><button type="button" class="chip" data-v="same" aria-pressed="false">the same</button><button type="button" class="chip" data-v="narrower" aria-pressed="false">less</button></div>
+    <div class="fb" id="spreadFb">Choose, then run 1,000 draws at 30 apples and again at 100.</div>
   </div>
   <div class="row"><button type="button" class="btn primary" id="btnRepeat">Draw 1,000 samples</button><button type="button" class="btn" id="btnNormal" aria-pressed="false">Lay the normal curve over</button></div>
   <canvas id="means" width="1000" height="400" aria-label="Histogram of sample means across repeated draws"></canvas>
@@ -373,7 +373,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   // ---- repeat ----
   const mc=$('means'), mctx=mc.getContext('2d');
   let means=[], repN=0, repStrat='', showNormal=false, spreadPred=null; const sdByN={};
-  [...$('spreadChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('spreadChoices').children].forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); spreadPred=b.dataset.v; $('spreadFb').textContent='Prediction locked: '+b.textContent+'. Now draw 1,000 samples at 30 apples, then at 100.'; $('spreadFb').className='fb'; }));
+  [...$('spreadChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('spreadChoices').children].forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); spreadPred=b.dataset.v; $('spreadFb').textContent='You said '+b.textContent+'. Now draw 1,000 samples at 30 apples, then at 100.'; $('spreadFb').className='fb'; }));
   function renderRepeat(){
     if(!means.length){ histogram(mctx,mc,[],{lo:WMIN,hi:WMAX,bins:60,color:'#4F5D75',note:'sample mean, g'}); statBox('repStats',[]); return; }
     const mm=mean(means), ms=sd(means);
@@ -384,8 +384,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     if(revealed) items.push(['bias, g',(mm-MU>=0?'+':'')+(mm-MU).toFixed(2)],['σ/√n, g',(SIG/Math.sqrt(repN)).toFixed(2)]);
     statBox('repStats',items);
     sdByN[repN]=ms;
-    if(spreadPred&&sdByN[30]!==undefined&&sdByN[100]!==undefined){ const narrower=sdByN[100]<sdByN[30]*0.9, same=!narrower&&sdByN[100]<=sdByN[30]*1.1; const truth=narrower?'narrower':(same?'the same':'wider');
-      $('spreadFb').textContent='At 30 apples the sd of means was '+sdByN[30].toFixed(2)+' g; at 100 it was '+sdByN[100].toFixed(2)+' g, so '+truth+'. '+(spreadPred===truth.replace('the ','')?'Your prediction was right.':'Your prediction was '+spreadPred+'.'); $('spreadFb').className='fb '+(spreadPred===truth.replace('the ','')?'good':'bad'); }
+    if(spreadPred&&sdByN[30]!==undefined&&sdByN[100]!==undefined){ const narrower=sdByN[100]<sdByN[30]*0.9, same=!narrower&&sdByN[100]<=sdByN[30]*1.1; const truth=narrower?'narrower':(same?'same':'wider'); const word={narrower:'less',same:'the same',wider:'more'};
+      $('spreadFb').textContent='At 30 apples the sd of means was '+sdByN[30].toFixed(2)+' g; at 100 it was '+sdByN[100].toFixed(2)+' g: they spread '+word[truth]+'. '+(spreadPred===truth?'You were right.':'You said '+word[spreadPred]+'.'); $('spreadFb').className='fb '+(spreadPred===truth?'good':'bad'); }
   }
   $('btnRepeat').addEventListener('click',()=>{ repN=parseInt($('nSize').value,10); repStrat=stratName(); means=[]; for(let k=0;k<1000;k++){ const s=STRAT[$('strategy').value].f(repN); means.push(mean(s.map(i=>apples[i].w))); } renderRepeat(); });
   $('btnNormal').addEventListener('click',()=>{ showNormal=!showNormal; $('btnNormal').setAttribute('aria-pressed',String(showNormal)); if(showNormal&&!revealed){ revealed=true; renderSample(); } renderRepeat(); renderCI(); });

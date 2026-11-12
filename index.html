@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Orchard Census</title>
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicon-64.png">
+<link rel="icon" type="image/png" sizes="256x256" href="img/favicon-256.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Companion to the Monty Hall page. GBH Option B: cream canvas, blue-family accent, pink anchored as the enclosed orchard panel and the lower band. T-Progress, five stations. */
+:root{
+  --canvas:#F0E8D8; --canvas-lt:#F6EFE2; --canvas-dk:#E8DECB; --pink:#E3A6AC; --pink-lt:#E9B4B9; --pink-dk:#D99AA1;
+  --surface:#A2AEBE; --surface-lt:#BFC8D3; --stroke:#4F5D75; --green:#9FB295; --green-dk:#637040;
+  --text:#A34860; --mauve:#BFA0AC; --mauve-lt:#DFCBD2; --trim:#C8A030; --trim-dk:#9A7B24;
+  --neutral:#F0E8D8; --label-bg:#FAF4E8; --butter:#F4DBB2;
+  --ink:#2C1F14; --ink-warm:#6E5140; --rule:#D8C8A0;
+  --apple-red:#C4655C; --apple-green:#8FA882; --apple-russet:#B5844E; --apple-gold:#D9B85A;
+  --display:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
+  --mono:"IBM Plex Mono","Courier New",monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--canvas);background-image:linear-gradient(172deg,var(--canvas-lt) 0%,var(--canvas) 55%,var(--canvas-dk) 100%);color:var(--ink);font-family:var(--display);font-size:19px;line-height:1.5;padding-block:36px 0;padding-inline:16px;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.09;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg fill='none' stroke='%239A7B24' stroke-width='1.4'%3E%3Cpath d='M24 0 L48 24 L24 48 L0 24 Z'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='1.6' fill='%239A7B24'/%3E%3C/svg%3E");background-size:48px 48px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;mix-blend-mode:multiply;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")}
+.wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;display:grid;gap:0;justify-items:center;text-align:center}
+.wrap>*{width:100%}
+h1,h2,h3{font-family:var(--display);font-weight:300;line-height:1.1;text-wrap:balance;margin:0;text-transform:uppercase;letter-spacing:.18em;color:var(--text)}
+h1{font-size:clamp(2.4rem,7vw,4.4rem);letter-spacing:.26em;padding-left:.26em}
+h3{font-size:1.2rem;letter-spacing:.14em}
+p{margin:0 auto;max-width:60ch}
+.aux{font-size:.95rem;color:var(--ink-warm);font-style:italic}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--trim);color:var(--text);padding:3px 10px;border-radius:999px;background:var(--label-bg);display:inline-block}
+.sign{display:inline-block;background:var(--text);color:var(--neutral);border:1px solid var(--trim);border-radius:999px;padding:6px 20px;font-size:.9rem;letter-spacing:.24em;text-transform:uppercase}
+.orn{color:var(--trim);letter-spacing:.6em;padding-left:.6em;font-size:.95rem}
+.node{display:grid;justify-items:center;padding-block:26px}
+.node .stem{width:1px;height:28px;background:var(--trim)}
+.node .dot{width:11px;height:11px;background:var(--trim);transform:rotate(45deg);margin:6px 0}
+.node .tag{margin-top:6px}
+.frame{position:relative;background:var(--butter);border:1px solid var(--trim);border-radius:14px;padding:26px 22px 28px;display:grid;gap:16px;justify-items:center}
+.frame::after{content:"";position:absolute;inset:6px;border:1px solid var(--trim);border-radius:9px;pointer-events:none}
+.frame.pink{background:var(--pink);background-image:linear-gradient(170deg,var(--pink-lt),var(--pink) 60%,var(--pink-dk))}
+.frame.blue{background:var(--surface);background-image:radial-gradient(ellipse at 50% 42%,transparent 45%,rgba(44,31,20,.10) 100%)}
+.frame.butter{background:var(--butter)} .frame.mauve{background:var(--mauve-lt)}
+.frame>*{position:relative;z-index:1}
+.title{display:grid;gap:4px;justify-items:center}
+.title .small{font-size:clamp(.9rem,2.2vw,1.2rem);letter-spacing:.5em;padding-left:.5em;color:var(--text);text-transform:uppercase;font-weight:300}
+.apples{display:flex;gap:14px;justify-content:center;padding:6px 0}
+.apples svg{width:34px;height:34px}
+.btn{font:inherit;font-size:.86rem;letter-spacing:.2em;text-transform:uppercase;padding:9px 20px;border:1px solid var(--trim);background:var(--label-bg);color:var(--text);cursor:pointer;border-radius:999px}
+.btn:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.btn.primary,.btn[aria-pressed="true"]{background:var(--text);color:var(--neutral)}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+.row label{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text)}
+select,input[type=number],textarea{font:inherit;font-size:.95rem;padding:7px 12px;border:1px solid var(--trim);background:var(--label-bg);color:var(--ink);border-radius:999px;max-width:100%}
+input[type=number]{width:110px;text-align:center}
+textarea{border-radius:12px;width:100%;max-width:60ch;min-height:80px;resize:vertical;font-size:1rem}
+canvas{width:100%;height:auto;display:block;border:1px solid var(--trim);border-radius:10px;background:var(--label-bg)}
+.tabpanel{width:100%;max-width:720px;display:grid;gap:12px;justify-items:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 6px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;align-items:stretch}
+@media (max-width:620px){.pair{grid-template-columns:1fr}}
+.cab{position:relative;border:1px solid var(--trim);border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;gap:8px;background:var(--label-bg)}
+.cab::after{content:"";position:absolute;inset:6px;border:1px solid var(--trim);border-radius:9px;pointer-events:none}
+.cab.cream{background:var(--neutral)} .cab.butter{background:var(--butter)} .cab.blue{background:var(--surface-lt)}
+.big{font-size:2.4rem;line-height:1;font-weight:300;color:var(--text);font-variant-numeric:tabular-nums}
+.big small{display:block;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-warm);margin-top:6px;font-family:var(--mono)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;width:100%;max-width:720px}
+.stats>div{border:1px solid var(--trim);border-radius:10px;background:var(--label-bg);padding:8px 6px;display:grid;gap:2px}
+.stats b{font-weight:400;font-size:1.25rem;color:var(--text);font-variant-numeric:tabular-nums}
+.stats small{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-warm)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-warm)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:6px;border:1px solid var(--trim-dk)}
+.em{color:var(--text);white-space:nowrap}
+.ask{width:100%;max-width:720px;border:1px solid var(--trim);border-radius:12px;background:var(--label-bg);padding:14px 16px;display:grid;gap:10px;justify-items:center}
+.ask .q{font-size:1.05rem}
+.ask .fb{font-size:.95rem;color:var(--ink-warm);font-style:italic;min-height:1.4em}
+.ask .fb.good{color:var(--green-dk)} .ask .fb.bad{color:var(--text)}
+.choices{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{font:inherit;font-size:.9rem;padding:6px 14px;border:1px solid var(--trim);border-radius:999px;background:var(--neutral);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--surface);border-color:var(--stroke)}
+.chip.right{background:var(--green);border-color:var(--green-dk)} .chip.wrong{background:var(--pink);border-color:var(--text)}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:720px;align-items:start}
+@media (max-width:560px){.match{grid-template-columns:1fr}}
+.match .col{display:grid;gap:8px}
+.mt{font:inherit;text-align:left;padding:8px 12px;border:1px solid var(--trim);border-radius:10px;background:var(--neutral);color:var(--ink);cursor:pointer;font-size:.95rem;line-height:1.3}
+.mt.term{text-transform:uppercase;letter-spacing:.14em;font-size:.85rem;color:var(--text);text-align:center}
+.mt[aria-pressed="true"]{background:var(--surface-lt);border-color:var(--stroke)}
+.mt.done{background:var(--green);border-color:var(--green-dk);cursor:default;opacity:.9}
+.mt.shake{background:var(--pink)}
+.closing .quote{font-style:italic;font-size:1.25rem;max-width:56ch;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 6px;color:var(--ink);margin:0 auto}
+.link{color:var(--text);text-decoration:none;border-bottom:1px solid var(--trim)}
+footer{margin-top:34px;margin-inline:-16px;background:var(--text);color:var(--neutral);border-top:1px solid var(--trim);padding:18px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
+footer>:first-child{justify-self:start} footer>:nth-child(2){justify-self:center;color:var(--butter);letter-spacing:.5em;padding-left:.5em} footer>:last-child{justify-self:end}
+footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(--trim)}
+@media (max-width:560px){footer{grid-template-columns:1fr;gap:6px;text-align:center} footer>*{justify-self:center!important}}
+</style>
+
+<div class="wrap">
+
+<header class="frame butter" aria-label="Title">
+  <div class="apples" aria-hidden="true">
+    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#C4655C"/></svg>
+    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#8FA882"/></svg>
+    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#D9B85A"/></svg>
+  </div>
+  <div class="title">
+    <div class="small">Population and sample</div>
+    <h1>Orchard Census</h1>
+    <div class="orn">✦ · ✦</div>
+  </div>
+  <div class="row" role="tablist" aria-label="Information">
+    <button type="button" class="btn" role="tab" id="tabRules" aria-selected="false" aria-controls="rules">The orchard</button>
+    <button type="button" class="btn" role="tab" id="tabAbout" aria-selected="false" aria-controls="about">Match the terms</button>
+  </div>
+  <div class="tabpanel" id="rules" role="tabpanel" hidden>
+    <p>A village orchard holds 1,000 apples on the trees of four plots. Each apple has a weight. The village wants the mean weight of all 1,000, but weighing every apple is slow, so a census taker weighs a sample. Draw the sample, describe the apples you weighed, then see what repeating the draw teaches.</p>
+  </div>
+  <div class="tabpanel" id="about" role="tabpanel" hidden>
+    <p class="aux">Click a term, then the definition that fits. Six pairs.</p>
+    <div class="match"><div class="col" id="terms"></div><div class="col" id="defs"></div></div>
+    <div class="aux" id="matchScore">0 of 6 matched</div>
+  </div>
+</header>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station I · Population</span></div>
+
+<section class="frame pink" aria-label="Population">
+  <span class="sign">One thousand apples</span>
+  <p class="aux">Each dot is an apple, coloured by plot and variety. The darker the dot, the heavier the apple. The gate is at the top left.</p>
+  <canvas id="pop" width="1000" height="640" aria-label="The population of apples, with sampled apples highlighted"></canvas>
+  <div class="legend"><span><i style="background:#C4655C"></i>Sun · red</span><span><i style="background:#8FA882"></i>Hill · green</span><span><i style="background:#B5844E"></i>Shade · russet</span><span><i style="background:#D9B85A"></i>Brook · gold</span><span><i style="background:#4F5D75"></i>In the sample</span></div>
+  <div class="ask">
+    <div class="q">Before anything is weighed: what do you think the mean weight of all 1,000 apples is?</div>
+    <div class="row"><input type="number" id="guess" min="50" max="400" step="1" placeholder="grams"><button type="button" class="btn" id="btnGuess">Lock in my guess</button></div>
+    <div class="fb" id="guessFb"></div>
+  </div>
+  <div class="row"><button type="button" class="btn" id="btnReveal" aria-pressed="false">Reveal the parameter</button><span class="aux" id="paramTxt">The population mean is hidden.</span></div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Sample</span></div>
+
+<section class="frame blue" aria-label="Sample">
+  <span class="sign">Weigh a sample</span>
+  <div class="row">
+    <label for="strategy">Strategy</label>
+    <select id="strategy">
+      <option value="srs" selected>Simple random</option>
+      <option value="sys">Systematic, every kth apple</option>
+      <option value="strat">Stratified by plot</option>
+      <option value="clus">Clustered by tree</option>
+      <option value="conv">Convenience, nearest the gate</option>
+      <option value="snow">Snowball, apples beside an apple</option>
+    </select>
+    <label for="nSize">Apples</label>
+    <select id="nSize"><option>10</option><option selected>30</option><option>100</option><option>300</option></select>
+    <button type="button" class="btn primary" id="btnDraw">Draw</button>
+  </div>
+  <p class="aux" id="stratTxt">Every apple has the same chance of being weighed.</p>
+  <div class="pair">
+    <div class="cab cream"><span class="tag">Statistic</span><div class="big" id="sampMean">–<small>sample mean, g</small></div><div class="aux" id="sampN">no sample yet</div></div>
+    <div class="cab butter"><span class="tag">Parameter</span><div class="big" id="popMean">?<small>population mean, g</small></div><div class="aux" id="errTxt">reveal to compare</div></div>
+  </div>
+  <div class="ask">
+    <div class="q">Which of the six strategies are probability samples, where every apple has a known chance of being chosen? Select all that apply, then check.</div>
+    <div class="choices" id="probChoices"></div>
+    <div class="row"><button type="button" class="btn" id="btnProbCheck">Check</button></div>
+    <div class="fb" id="probFb"></div>
+  </div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station III · Describe</span></div>
+
+<section class="frame butter" aria-label="Describe">
+  <span class="sign">Describe the sample</span>
+  <canvas id="hist" width="1000" height="400" aria-label="Histogram of sampled weights"></canvas>
+  <div class="stats" id="stats"></div>
+  <p class="aux">Mode, median and mean are measures of centre. Range, quartiles, mean absolute deviation, variance and standard deviation are measures of spread.</p>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station IV · Repeat</span></div>
+
+<section class="frame mauve" aria-label="Repeat">
+  <span class="sign">Draw it a thousand times</span>
+  <p class="aux">Keep the strategy and size chosen above. Each draw gives one sample mean. The histogram collects them.</p>
+  <div class="ask">
+    <div class="q">Prediction first. If the census taker weighs 100 apples each time instead of 30, the spread of the sample means will be</div>
+    <div class="choices" id="spreadChoices"><button type="button" class="chip" data-v="wider" aria-pressed="false">wider</button><button type="button" class="chip" data-v="same" aria-pressed="false">the same</button><button type="button" class="chip" data-v="narrower" aria-pressed="false">narrower</button></div>
+    <div class="fb" id="spreadFb">Lock in a prediction, then run 30 and 100 and compare the sd of means.</div>
+  </div>
+  <div class="row"><button type="button" class="btn primary" id="btnRepeat">Draw 1,000 samples</button><button type="button" class="btn" id="btnNormal" aria-pressed="false">Lay the normal curve over</button></div>
+  <canvas id="means" width="1000" height="400" aria-label="Histogram of sample means across repeated draws"></canvas>
+  <div class="stats" id="repStats"></div>
+  <div class="pair">
+    <div class="cab cream"><h3>Law of large numbers</h3><p class="aux">One simple random sample grows from 1 apple to 1,000. The running mean settles on the parameter.</p><canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas></div>
+    <div class="cab cream"><h3>Central limit theorem</h3><p class="aux">The population of weights is skewed. The sample means are not: across draws they pile up in a bell around the parameter, and the bell narrows as the sample grows, by one over the square root of n.</p><p class="aux">iid: each apple drawn independently from the same population. Trees and neighbours break independence, and the bell changes shape.</p></div>
+  </div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station V · Infer</span></div>
+
+<section class="frame pink" aria-label="Infer">
+  <span class="sign">From the sample to the orchard</span>
+  <p class="aux">One sample gives one interval: the mean plus or minus 1.96 standard errors. Draw 100 samples and see how many intervals hold the parameter.</p>
+  <div class="ask">
+    <div class="q">Out of 100 intervals built from 95% confidence, how many do you expect to hold the parameter with the strategy chosen above?</div>
+    <div class="row"><input type="number" id="covGuess" min="0" max="100" step="1" placeholder="0 to 100"><button type="button" class="btn primary" id="btnCI">Draw 100 intervals</button></div>
+    <div class="fb" id="covFb"></div>
+  </div>
+  <canvas id="ci" width="1000" height="520" aria-label="One hundred confidence intervals"></canvas>
+  <div class="stats" id="ciStats"></div>
+  <div class="ask">
+    <div class="q">Your turn. The village can afford to weigh 100 apples. Which strategy would you use, and what could still go wrong? Write two or three sentences and copy them to the class board.</div>
+    <textarea id="answer" placeholder="I would use ... because ..."></textarea>
+    <div class="row"><button type="button" class="btn" id="btnCopy">Copy my answer</button><span class="fb" id="copyFb"></span></div>
+  </div>
+  <div class="closing"><div class="quote">A probability sample is wrong by chance, and chance shrinks with size. A convenience sample is wrong by design, and size does nothing. The sampling rule decides what the data mean, just as the host does behind the <a class="link" href="https://jerchenn.github.io/monty-hall/">three doors</a>.</div></div>
+</section>
+
+<footer><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span><span>✦ · ✦</span><span>University of Cambridge</span></footer>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const panels={tabRules:'rules',tabAbout:'about'};
+  function showPanel(w){ Object.keys(panels).forEach(k=>{ $(k).setAttribute('aria-selected',String(k===w)); $(k).setAttribute('aria-pressed',String(k===w)); $(panels[k]).hidden=(k!==w); }); }
+  Object.keys(panels).forEach(k=>$(k).addEventListener('click',()=>showPanel($(k).getAttribute('aria-selected')==='true'?null:k)));
+
+  // ---- matching exercise ----
+  const TERMS=[['Population','All 1,000 apples in the orchard'],['Sample','The apples the census taker weighs'],['Data','The weights written down'],['Variable','A characteristic measured on each apple, such as weight'],['Statistic','A number computed from the sample, such as its mean'],['Parameter','The number for the whole orchard, which the statistic estimates']];
+  const rnd=n=>Math.floor(Math.random()*n);
+  const shuffle=a=>{ for(let k=a.length-1;k>0;k--){ const m=rnd(k+1); [a[k],a[m]]=[a[m],a[k]]; } return a; };
+  let selTerm=null, matched=0;
+  const termOrder=shuffle(TERMS.map((t,i)=>i)), defOrder=shuffle(TERMS.map((t,i)=>i));
+  termOrder.forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt term'; b.textContent=TERMS[i][0]; b.dataset.i=i; b.setAttribute('aria-pressed','false'); b.addEventListener('click',()=>{ if(b.classList.contains('done')) return; document.querySelectorAll('.mt.term').forEach(x=>x.setAttribute('aria-pressed','false')); selTerm=b; b.setAttribute('aria-pressed','true'); }); $('terms').appendChild(b); });
+  defOrder.forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt'; b.textContent=TERMS[i][1]; b.dataset.i=i; b.addEventListener('click',()=>{ if(b.classList.contains('done')||!selTerm) return; if(selTerm.dataset.i===b.dataset.i){ selTerm.classList.add('done'); b.classList.add('done'); selTerm.setAttribute('aria-pressed','false'); selTerm=null; matched++; $('matchScore').textContent=matched+' of 6 matched'+(matched===6?'. All six.':''); } else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),500); } }); $('defs').appendChild(b); });
+
+  // ---- population: 40 x 25, four plots, skewed weights in grams, fixed seed ----
+  const COLS=40, ROWS=25, N=COLS*ROWS;
+  let seed=20261112; const srand=()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+  const gauss=r=>{ let u=0,v=0; while(u===0)u=r(); while(v===0)v=r(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
+  const PLOT=[{name:'Sun',mu:190,col:'#C4655C'},{name:'Hill',mu:130,col:'#8FA882'},{name:'Shade',mu:155,col:'#B5844E'},{name:'Brook',mu:215,col:'#D9B85A'}];
+  const apples=[];
+  for(let i=0;i<N;i++){ const c=i%COLS, r=Math.floor(i/COLS); const p=(c<COLS/2?0:1)+(r<ROWS/2?0:2);
+    apples.push({i,c,r,p,w:Math.round(Math.exp(Math.log(PLOT[p].mu)+0.16*gauss(srand))*10)/10}); }
+  const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+  const sd=(a,ddof=0)=>{ const m=mean(a); return Math.sqrt(a.reduce((s,x)=>s+(x-m)*(x-m),0)/(a.length-ddof)); };
+  const W=apples.map(g=>g.w), MU=mean(W), SIG=sd(W), WMIN=Math.min(...W), WMAX=Math.max(...W);
+
+  const STRAT={
+    srs:{prob:true,txt:'Every apple has the same chance of being weighed.', f:n=>shuffle(apples.map(g=>g.i)).slice(0,n)},
+    sys:{prob:true,txt:'Walk the rows in order and weigh every kth apple from a random start.', f:n=>{ const k=Math.floor(N/n); const s=rnd(k); const out=[]; for(let j=s;j<N&&out.length<n;j+=k) out.push(j); return out; }},
+    strat:{prob:true,txt:'Each plot contributes apples in proportion to its size, drawn at random within the plot.', f:n=>{ const out=[]; PLOT.forEach((p,pi)=>{ const ids=shuffle(apples.filter(g=>g.p===pi).map(g=>g.i)); out.push(...ids.slice(0,Math.round(n/4))); }); return out.slice(0,n); }},
+    clus:{prob:true,txt:'Each tree carries 25 apples, 5 by 5. Whole trees are chosen at random and every apple on them is weighed.', f:n=>{ const trees=shuffle([...Array(40).keys()]); const out=[]; for(const t of trees){ if(out.length>=n) break; const pc=t%8, pr=Math.floor(t/8); for(let r=pr*5;r<pr*5+5;r++) for(let c=pc*5;c<pc*5+5;c++) out.push(r*COLS+c); } return out.slice(0,n); }},
+    conv:{prob:false,txt:'The census taker stands at the gate and weighs the nearest apples. The gate opens onto the Sun plot, where the apples are heavy.', f:n=>apples.slice().sort((a,b)=>(a.c*a.c+a.r*a.r)-(b.c*b.c+b.r*b.r)).slice(0,n).map(g=>g.i)},
+    snow:{prob:false,txt:'One apple is weighed, then the apples hanging beside that one, then their neighbours, until the sample is full. Neighbours share a plot.', f:n=>{ const start=rnd(N); const seen=new Set([start]); const q=[start]; while(q.length&&seen.size<n){ const g=apples[q.shift()]; const nb=shuffle([[1,0],[-1,0],[0,1],[0,-1]]); for(const [dc,dr] of nb){ const c=g.c+dc,r=g.r+dr; if(c<0||r<0||c>=COLS||r>=ROWS) continue; const j=r*COLS+c; if(!seen.has(j)){ seen.add(j); q.push(j); if(seen.size>=n) break; } } } return [...seen]; }}
+  };
+  const stratName=()=>$('strategy').options[$('strategy').selectedIndex].text.toLowerCase();
+  function drawSample(){ return STRAT[$('strategy').value].f(parseInt($('nSize').value,10)); }
+
+  // ---- population canvas: apples as dots with a stem ----
+  const pc=$('pop'), pctx=pc.getContext('2d');
+  let sample=[], revealed=false;
+  function drawPop(){
+    const cw=pc.width/COLS, ch=pc.height/ROWS; pctx.clearRect(0,0,pc.width,pc.height);
+    const inS=new Set(sample);
+    apples.forEach(g=>{ const x=g.c*cw+cw/2, y=g.r*ch+ch/2+1; const t=(g.w-WMIN)/(WMAX-WMIN); const rad=cw*0.33;
+      pctx.strokeStyle='#637040'; pctx.lineWidth=1.2; pctx.beginPath(); pctx.moveTo(x,y-rad); pctx.lineTo(x+1.5,y-rad-4); pctx.stroke();
+      pctx.beginPath(); pctx.arc(x,y,rad,0,Math.PI*2);
+      pctx.fillStyle=inS.has(g.i)?'#4F5D75':PLOT[g.p].col; pctx.globalAlpha=inS.has(g.i)?1:0.4+0.6*t; pctx.fill(); pctx.globalAlpha=1;
+      pctx.strokeStyle=inS.has(g.i)?'#2C1F14':'#9A7B24'; pctx.lineWidth=inS.has(g.i)?2:0.5; pctx.stroke(); });
+    pctx.strokeStyle='#9A7B24'; pctx.lineWidth=1.5; pctx.setLineDash([6,6]);
+    pctx.beginPath(); pctx.moveTo(pc.width/2,0); pctx.lineTo(pc.width/2,pc.height); pctx.moveTo(0,pc.height/2); pctx.lineTo(pc.width,pc.height/2); pctx.stroke(); pctx.setLineDash([]);
+    pctx.fillStyle='#A34860'; pctx.font='22px Cormorant Garamond, serif'; pctx.textBaseline='top';
+    [['Sun',8,6,'left'],['Hill',pc.width-8,6,'right'],['Shade',8,pc.height/2+6,'left'],['Brook',pc.width-8,pc.height/2+6,'right']].forEach(([n,x,y,a])=>{ pctx.textAlign=a; pctx.fillText(n.toUpperCase(),x,y); });
+    pctx.textAlign='left'; pctx.fillStyle='#9A7B24'; pctx.font='16px IBM Plex Mono, monospace'; pctx.fillText('GATE',8,pc.height-24);
+  }
+
+  // ---- descriptive statistics + histograms ----
+  const q=(a,p)=>{ const s=a.slice().sort((x,y)=>x-y); const k=(s.length-1)*p, lo=Math.floor(k), hi=Math.ceil(k); return s[lo]+(s[hi]-s[lo])*(k-lo); };
+  const mode=a=>{ const m=new Map(); a.forEach(x=>{ const b=Math.round(x/5)*5; m.set(b,(m.get(b)||0)+1); }); let best=null,bc=0; m.forEach((c,b)=>{ if(c>bc){bc=c;best=b;} }); return best; };
+  function statBox(id,items){ $(id).innerHTML=items.map(([l,v])=>'<div><b>'+v+'</b><small>'+l+'</small></div>').join(''); }
+  const hc=$('hist'), hctx=hc.getContext('2d');
+  function histogram(ctx,cv,values,{lo,hi,bins,color,lines=[],normal=null,note=''}){
+    const Wc=cv.width,H=cv.height,L=60,R=24,T=28,B=56; ctx.clearRect(0,0,Wc,H);
+    const counts=new Array(bins).fill(0); values.forEach(v=>{ let b=Math.floor((v-lo)/(hi-lo)*bins); b=Math.max(0,Math.min(bins-1,b)); counts[b]++; });
+    const maxc=Math.max(1,...counts); const X=v=>L+(v-lo)/(hi-lo)*(Wc-L-R); const Y=c=>T+(1-c/maxc)*(H-T-B);
+    ctx.strokeStyle='#D8C8A0'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(L,H-B); ctx.lineTo(Wc-R,H-B); ctx.stroke();
+    const bw=(Wc-L-R)/bins; counts.forEach((c,b)=>{ if(!c) return; ctx.fillStyle=color; ctx.fillRect(L+b*bw+1,Y(c),bw-2,H-B-Y(c)); });
+    ctx.fillStyle='#6E5140'; ctx.font='18px Cormorant Garamond, serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+    const step=(hi-lo)/8; for(let k=0;k<=8;k++){ const v=lo+k*step; ctx.fillText(v.toFixed(0),X(v),H-B+6); }
+    ctx.fillText(note,(L+Wc-R)/2,H-B+28);
+    if(normal){ const {m,s}=normal; const bwv=(hi-lo)/bins; ctx.strokeStyle='#9A7B24'; ctx.lineWidth=3; ctx.beginPath();
+      for(let k=0;k<=200;k++){ const v=lo+(hi-lo)*k/200; const d=values.length*bwv*Math.exp(-0.5*((v-m)/s)**2)/(s*Math.sqrt(2*Math.PI)); const y=Y(d); k===0?ctx.moveTo(X(v),y):ctx.lineTo(X(v),y); } ctx.stroke(); }
+    lines.forEach(([v,col,label,dash])=>{ if(v<lo||v>hi) return; ctx.strokeStyle=col; ctx.lineWidth=2; ctx.setLineDash(dash?[6,6]:[]); ctx.beginPath(); ctx.moveTo(X(v),T); ctx.lineTo(X(v),H-B); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle=col; ctx.textBaseline='bottom'; ctx.textAlign=dash?'left':'right'; ctx.fillText(dash?'  '+label:label+'  ',X(v),T-4); ctx.textAlign='center'; });
+  }
+  function renderSample(){
+    drawPop();
+    const vals=sample.map(i=>apples[i].w);
+    if(!vals.length){ $('sampMean').innerHTML='–<small>sample mean, g</small>'; $('sampN').textContent='no sample yet'; statBox('stats',[]); histogram(hctx,hc,[],{lo:WMIN,hi:WMAX,bins:30,color:'#A34860',note:'weight, g'}); renderParam(); return; }
+    const m=mean(vals); $('sampMean').innerHTML=m.toFixed(1)+'<small>sample mean, g</small>'; $('sampN').textContent=vals.length+' apples weighed, '+stratName();
+    const lines=[[m,'#A34860','sample mean']]; if(revealed) lines.push([MU,'#4F5D75','parameter',true]);
+    histogram(hctx,hc,vals,{lo:WMIN,hi:WMAX,bins:30,color:'#A34860',lines,note:'weight, g'});
+    const md=mean(vals.map(v=>Math.abs(v-m)));
+    statBox('stats',[['mode, g (5 g bins)',mode(vals)],['median, g',q(vals,.5).toFixed(1)],['mean, g',m.toFixed(1)],['range, g',(Math.max(...vals)-Math.min(...vals)).toFixed(1)],['Q1 to Q3, g',q(vals,.25).toFixed(1)+' to '+q(vals,.75).toFixed(1)],['mean abs. dev.',md.toFixed(2)],['variance',(sd(vals,1)**2).toFixed(1)],['std deviation',sd(vals,1).toFixed(2)]]);
+    renderParam();
+  }
+  let guess=null;
+  function renderParam(){
+    const vals=sample.map(i=>apples[i].w);
+    if(revealed){ $('popMean').innerHTML=MU.toFixed(1)+'<small>population mean, g</small>'; $('paramTxt').textContent='The 1,000 apples weigh '+MU.toFixed(1)+' g on average, with a standard deviation of '+SIG.toFixed(1)+' g.';
+      $('errTxt').textContent=vals.length?('this sample is '+(mean(vals)-MU>=0?'+':'')+(mean(vals)-MU).toFixed(1)+' g from the parameter'):'draw a sample to compare';
+      if(guess!==null){ $('guessFb').textContent='Your guess of '+guess+' g was '+Math.abs(guess-MU).toFixed(1)+' g '+(guess>=MU?'above':'below')+' the parameter'+(vals.length?'; the sample mean was '+Math.abs(mean(vals)-MU).toFixed(1)+' g off.':'.'); $('guessFb').className='fb'; } }
+    else { $('popMean').innerHTML='?<small>population mean, g</small>'; $('paramTxt').textContent='The population mean is hidden.'; $('errTxt').textContent='reveal to compare'; }
+    $('btnReveal').setAttribute('aria-pressed',String(revealed)); $('btnReveal').textContent=revealed?'Hide the parameter':'Reveal the parameter';
+  }
+  $('btnGuess').addEventListener('click',()=>{ const v=parseFloat($('guess').value); if(!isFinite(v)){ $('guessFb').textContent='Type a weight in grams first.'; $('guessFb').className='fb bad'; return; } guess=v; $('guessFb').textContent='Locked in: '+v+' g. Reveal the parameter when you are ready.'; $('guessFb').className='fb good'; if(revealed) renderParam(); });
+  $('btnDraw').addEventListener('click',()=>{ sample=drawSample(); renderSample(); });
+  $('strategy').addEventListener('change',()=>{ $('stratTxt').textContent=STRAT[$('strategy').value].txt; });
+  $('btnReveal').addEventListener('click',()=>{ revealed=!revealed; renderSample(); renderRepeat(); renderCI(); });
+
+  // ---- probability-sample check ----
+  const sel=$('strategy'); [...sel.options].forEach(o=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'; b.dataset.v=o.value; b.textContent=o.text; b.setAttribute('aria-pressed','false'); b.addEventListener('click',()=>b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))); $('probChoices').appendChild(b); });
+  $('btnProbCheck').addEventListener('click',()=>{ let ok=0; const chips=[...$('probChoices').children]; chips.forEach(b=>{ const chosen=b.getAttribute('aria-pressed')==='true', truth=STRAT[b.dataset.v].prob; b.classList.toggle('right',chosen===truth&&truth); b.classList.toggle('wrong',chosen!==truth); if(chosen===truth) ok++; });
+    $('probFb').textContent=ok===chips.length?'All six right. The first four give every apple a known chance; convenience and snowball do not.':(ok+' of 6 right. Probability samples are the four where chance, not the census taker or the apples, decides who is weighed.'); $('probFb').className='fb '+(ok===chips.length?'good':'bad'); });
+
+  // ---- repeat ----
+  const mc=$('means'), mctx=mc.getContext('2d');
+  let means=[], repN=0, repStrat='', showNormal=false, spreadPred=null; const sdByN={};
+  [...$('spreadChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('spreadChoices').children].forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); spreadPred=b.dataset.v; $('spreadFb').textContent='Prediction locked: '+b.textContent+'. Now draw 1,000 samples at 30 apples, then at 100.'; $('spreadFb').className='fb'; }));
+  function renderRepeat(){
+    if(!means.length){ histogram(mctx,mc,[],{lo:WMIN,hi:WMAX,bins:60,color:'#4F5D75',note:'sample mean, g'}); statBox('repStats',[]); return; }
+    const mm=mean(means), ms=sd(means);
+    const lines=[[mm,'#4F5D75','average of the sample means']]; if(revealed) lines.push([MU,'#A34860','parameter',true]);
+    const normal=(showNormal&&revealed)?{m:MU,s:SIG/Math.sqrt(repN)}:null;
+    histogram(mctx,mc,means,{lo:WMIN,hi:WMAX,bins:60,color:'#4F5D75',lines,normal,note:'sample mean, g · '+means.length+' draws of '+repN+' apples, '+repStrat});
+    const items=[['draws',means.length],['apples per draw',repN],['mean of means, g',mm.toFixed(2)],['sd of means, g',ms.toFixed(2)]];
+    if(revealed) items.push(['bias, g',(mm-MU>=0?'+':'')+(mm-MU).toFixed(2)],['σ/√n, g',(SIG/Math.sqrt(repN)).toFixed(2)]);
+    statBox('repStats',items);
+    sdByN[repN]=ms;
+    if(spreadPred&&sdByN[30]!==undefined&&sdByN[100]!==undefined){ const narrower=sdByN[100]<sdByN[30]*0.9, same=!narrower&&sdByN[100]<=sdByN[30]*1.1; const truth=narrower?'narrower':(same?'the same':'wider');
+      $('spreadFb').textContent='At 30 apples the sd of means was '+sdByN[30].toFixed(2)+' g; at 100 it was '+sdByN[100].toFixed(2)+' g, so '+truth+'. '+(spreadPred===truth.replace('the ','')?'Your prediction was right.':'Your prediction was '+spreadPred+'.'); $('spreadFb').className='fb '+(spreadPred===truth.replace('the ','')?'good':'bad'); }
+  }
+  $('btnRepeat').addEventListener('click',()=>{ repN=parseInt($('nSize').value,10); repStrat=stratName(); means=[]; for(let k=0;k<1000;k++){ const s=STRAT[$('strategy').value].f(repN); means.push(mean(s.map(i=>apples[i].w))); } renderRepeat(); });
+  $('btnNormal').addEventListener('click',()=>{ showNormal=!showNormal; $('btnNormal').setAttribute('aria-pressed',String(showNormal)); if(showNormal&&!revealed){ revealed=true; renderSample(); } renderRepeat(); renderCI(); });
+
+  // ---- law of large numbers ----
+  const lc=$('lln'), lctx=lc.getContext('2d');
+  function drawLLN(){
+    const order=shuffle(apples.map(g=>g.i)); const run=[]; let s=0; order.forEach((i,k)=>{ s+=apples[i].w; run.push(s/(k+1)); });
+    const Wc=lc.width,H=lc.height,L=60,R=20,T=20,B=44; lctx.clearRect(0,0,Wc,H);
+    const lo=MU-45, hi=MU+45; const X=n=>L+Math.log10(n)/3*(Wc-L-R); const Y=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
+    lctx.strokeStyle='#D8C8A0'; lctx.lineWidth=1; [1,10,100,1000].forEach(n=>{ lctx.beginPath(); lctx.moveTo(X(n),T); lctx.lineTo(X(n),H-B); lctx.stroke(); });
+    lctx.fillStyle='#6E5140'; lctx.font='18px Cormorant Garamond, serif'; lctx.textAlign='center'; lctx.textBaseline='top'; [1,10,100,1000].forEach(n=>lctx.fillText(n,X(n),H-B+6)); lctx.fillText('apples weighed so far (log scale)',(L+Wc-R)/2,H-B+24);
+    lctx.strokeStyle='#A34860'; lctx.setLineDash([6,6]); lctx.beginPath(); lctx.moveTo(L,Y(MU)); lctx.lineTo(Wc-R,Y(MU)); lctx.stroke(); lctx.setLineDash([]);
+    lctx.strokeStyle='#4F5D75'; lctx.lineWidth=2.5; lctx.beginPath(); run.forEach((v,k)=>{ const y=Y(Math.max(lo,Math.min(hi,v))); k===0?lctx.moveTo(X(k+1),y):lctx.lineTo(X(k+1),y); }); lctx.stroke();
+    lctx.fillStyle='#A34860'; lctx.textAlign='left'; lctx.textBaseline='bottom'; lctx.fillText('parameter',L+4,Y(MU)-2);
+  }
+
+  // ---- infer ----
+  const cc=$('ci'), cctx=cc.getContext('2d');
+  let cis=[], ciN=0, ciStrat='', covGuess=null;
+  function renderCI(){
+    const Wc=cc.width,H=cc.height,L=40,R=24,T=28,B=50; cctx.clearRect(0,0,Wc,H);
+    if(!cis.length){ cctx.fillStyle='#6E5140'; cctx.font='22px Cormorant Garamond, serif'; cctx.textAlign='center'; cctx.textBaseline='middle'; cctx.fillText('Draw 100 intervals to see how many hold the parameter.',Wc/2,H/2); statBox('ciStats',[]); return; }
+    const lo=MU-50, hi=MU+50; const X=v=>L+(v-lo)/(hi-lo)*(Wc-L-R); const rowH=(H-T-B)/cis.length; let hit=0;
+    cis.forEach(([a,b],k)=>{ const ok=a<=MU&&MU<=b; if(ok) hit++; const y=T+k*rowH+rowH/2; cctx.strokeStyle=revealed?(ok?'#4F5D75':'#A34860'):'#BFA0AC'; cctx.lineWidth=Math.max(1.5,rowH*0.6); cctx.beginPath(); cctx.moveTo(X(Math.max(lo,a)),y); cctx.lineTo(X(Math.min(hi,b)),y); cctx.stroke(); });
+    if(revealed){ cctx.strokeStyle='#A34860'; cctx.lineWidth=2; cctx.setLineDash([6,6]); cctx.beginPath(); cctx.moveTo(X(MU),T-6); cctx.lineTo(X(MU),H-B); cctx.stroke(); cctx.setLineDash([]); }
+    cctx.fillStyle='#6E5140'; cctx.font='18px Cormorant Garamond, serif'; cctx.textAlign='center'; cctx.textBaseline='top'; for(let v=Math.ceil(lo/10)*10;v<=hi;v+=10) cctx.fillText(v,X(v),H-B+6); cctx.fillText('weight, g · 95% intervals from '+cis.length+' samples of '+ciN+' apples, '+ciStrat,(L+Wc-R)/2,H-B+26);
+    const items=[['intervals',cis.length],['apples per sample',ciN]]; if(revealed) items.push(['hold the parameter',hit+' of '+cis.length],['coverage',(100*hit/cis.length).toFixed(0)+'%']); else items.push(['hold the parameter','reveal to see']);
+    statBox('ciStats',items);
+    if(revealed){ $('covFb').textContent=(covGuess!==null?'You expected '+covGuess+'; ':'')+hit+' of 100 held the parameter'+(STRAT[$('strategy').value].prob?'. With a probability sample the long-run answer is about 95.':'. With a non-probability sample the intervals are precise about the wrong number.'); $('covFb').className='fb'; }
+    else { $('covFb').textContent='Reveal the parameter to count the hits.'; $('covFb').className='fb'; }
+  }
+  $('btnCI').addEventListener('click',()=>{ const g=parseInt($('covGuess').value,10); covGuess=isFinite(g)?g:null; ciN=parseInt($('nSize').value,10); ciStrat=stratName(); cis=[]; for(let k=0;k<100;k++){ const v=STRAT[$('strategy').value].f(ciN).map(i=>apples[i].w); const m=mean(v), se=sd(v,1)/Math.sqrt(v.length); cis.push([m-1.96*se,m+1.96*se]); } renderCI(); });
+
+  // ---- copy the free-text answer ----
+  $('btnCopy').addEventListener('click',()=>{ const t=$('answer').value.trim(); if(!t){ $('copyFb').textContent='Write an answer first.'; return; }
+    const done=()=>{ $('copyFb').textContent='Copied. Paste it on the class board.'; };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(()=>{ $('answer').select(); $('copyFb').textContent='Select all and copy with the keyboard.'; }); } else { $('answer').select(); $('copyFb').textContent='Select all and copy with the keyboard.'; } });
+
+  renderSample(); renderRepeat(); drawLLN(); renderCI();
+})();
+</script>
+</body>
+</html>

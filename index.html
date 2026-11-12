@@ -339,7 +339,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     ctx.fillText(note,(L+Wc-R)/2,H-B+28);
     if(normal){ const {m,s}=normal; const bwv=(hi-lo)/bins; ctx.strokeStyle='#9A7B24'; ctx.lineWidth=3; ctx.beginPath();
       for(let k=0;k<=200;k++){ const v=lo+(hi-lo)*k/200; const d=values.length*bwv*Math.exp(-0.5*((v-m)/s)**2)/(s*Math.sqrt(2*Math.PI)); const y=Y(d); k===0?ctx.moveTo(X(v),y):ctx.lineTo(X(v),y); } ctx.stroke(); }
-    lines.forEach(([v,col,label,dash])=>{ if(v<lo||v>hi) return; ctx.strokeStyle=col; ctx.lineWidth=2; ctx.setLineDash(dash?[6,6]:[]); ctx.beginPath(); ctx.moveTo(X(v),T); ctx.lineTo(X(v),H-B); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle=col; ctx.textBaseline='bottom'; ctx.textAlign=dash?'left':'right'; ctx.fillText(dash?'  '+label:label+'  ',X(v),T-4); ctx.textAlign='center'; });
+    lines.forEach(([v,col,label,dash])=>{ if(v<lo||v>hi) return; ctx.strokeStyle=col; ctx.lineWidth=2; ctx.setLineDash(dash?[6,6]:[]); ctx.beginPath(); ctx.moveTo(X(v),T); ctx.lineTo(X(v),H-B); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle=col; ctx.textAlign='center'; if(dash){ ctx.textBaseline='bottom'; ctx.fillText(label,X(v),H-B-4); } else { ctx.textBaseline='bottom'; ctx.fillText(label,X(v),T-4); } });
   }
   function renderSample(){
     drawPop();

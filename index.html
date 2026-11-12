@@ -67,6 +67,7 @@ textarea{border-radius:12px;width:100%;max-width:60ch;min-height:80px;resize:ver
 canvas{width:100%;height:auto;display:block;border:1px solid var(--trim);border-radius:10px;background:var(--label-bg)}
 .tabpanel{width:100%;max-width:720px;display:grid;gap:12px;justify-items:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 6px}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;align-items:stretch}
+.pair.one{grid-template-columns:1fr;max-width:420px}
 @media (max-width:620px){.pair{grid-template-columns:1fr}}
 .cab{position:relative;border:1px solid var(--trim);border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;gap:8px;background:var(--label-bg)}
 .cab::after{content:"";position:absolute;inset:6px;border:1px solid var(--trim);border-radius:9px;pointer-events:none}
@@ -135,15 +136,15 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
 <section class="frame pink" aria-label="Population">
   <span class="sign">One thousand apples</span>
-  <p class="aux">Each dot is an apple, coloured by plot and variety. The darker the dot, the heavier the apple. The gate is at the top left.</p>
+  <p class="aux">Each dot is an apple, coloured by plot and variety. The darker the dot, the heavier the apple. The gate is at the top left. Click any apple to weigh that one.</p>
   <canvas id="pop" width="1000" height="640" aria-label="The population of apples, with sampled apples highlighted"></canvas>
   <div class="legend"><span><i style="background:#C4655C"></i>Sun · red</span><span><i style="background:#8FA882"></i>Hill · green</span><span><i style="background:#B5844E"></i>Shade · russet</span><span><i style="background:#D9B85A"></i>Brook · gold</span><span><i style="background:#4F5D75"></i>In the sample</span></div>
   <div class="ask">
-    <div class="q">Before anything is weighed: what do you think the mean weight of all 1,000 apples is?</div>
-    <div class="row"><input type="number" id="guess" min="50" max="400" step="1" placeholder="grams"><button type="button" class="btn" id="btnGuess">Lock in my guess</button></div>
-    <div class="fb" id="guessFb"></div>
+    <div class="q" id="weighQ">The village wants the mean weight of all 1,000. Start weighing.</div>
+    <div class="row"><div class="big" id="weighMean">–<small>mean of the apples weighed so far, g</small></div></div>
+    <div class="fb" id="weighFb">0 of 1,000 weighed</div>
+    <div class="row"><button type="button" class="btn" id="btnWeighReset">Put them back</button></div>
   </div>
-  <div class="row"><button type="button" class="btn" id="btnReveal" aria-pressed="false">Reveal the parameter</button><span class="aux" id="paramTxt">The population mean is hidden.</span></div>
 </section>
 
 <div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Sample</span></div>
@@ -165,9 +166,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     <button type="button" class="btn primary" id="btnDraw">Draw</button>
   </div>
   <p class="aux" id="stratTxt">Every apple has the same chance of being weighed.</p>
-  <div class="pair">
+  <div class="pair one">
     <div class="cab cream"><span class="tag">Statistic</span><div class="big" id="sampMean">–<small>sample mean, g</small></div><div class="aux" id="sampN">no sample yet</div></div>
-    <div class="cab butter"><span class="tag">Parameter</span><div class="big" id="popMean">?<small>population mean, g</small></div><div class="aux" id="errTxt">reveal to compare</div></div>
   </div>
   <div class="ask">
     <div class="q">Which of the six strategies are probability samples, where every apple has a known chance of being chosen? Select all that apply, then check.</div>
@@ -217,6 +217,10 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   </div>
   <canvas id="ci" width="1000" height="520" aria-label="One hundred confidence intervals"></canvas>
   <div class="stats" id="ciStats"></div>
+  <div class="pair one">
+    <div class="cab butter"><span class="tag">Parameter</span><div class="big" id="popMean">?<small>population mean, g</small></div><div class="aux" id="errTxt">reveal to compare</div></div>
+  </div>
+  <div class="row"><button type="button" class="btn" id="btnReveal" aria-pressed="false">Reveal the parameter</button><span class="aux" id="paramTxt">The population mean is hidden.</span></div>
   <div class="ask">
     <div class="q">Your turn. The village can afford to weigh 100 apples. Which strategy would you use, and what could still go wrong? Write two or three sentences and copy them to the class board.</div>
     <textarea id="answer" placeholder="I would use ... because ..."></textarea>
@@ -269,7 +273,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
   // ---- population canvas: apples as dots with a stem ----
   const pc=$('pop'), pctx=pc.getContext('2d');
-  let sample=[], revealed=false;
+  let sample=[], revealed=false; const weighed=new Set();
   function drawPop(){
     const cw=pc.width/COLS, ch=pc.height/ROWS; pctx.clearRect(0,0,pc.width,pc.height);
     const inS=new Set(sample);
@@ -277,7 +281,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
       pctx.strokeStyle='#637040'; pctx.lineWidth=1.2; pctx.beginPath(); pctx.moveTo(x,y-rad); pctx.lineTo(x+1.5,y-rad-4); pctx.stroke();
       pctx.beginPath(); pctx.arc(x,y,rad,0,Math.PI*2);
       pctx.fillStyle=inS.has(g.i)?'#4F5D75':PLOT[g.p].col; pctx.globalAlpha=inS.has(g.i)?1:0.4+0.6*t; pctx.fill(); pctx.globalAlpha=1;
-      pctx.strokeStyle=inS.has(g.i)?'#2C1F14':'#9A7B24'; pctx.lineWidth=inS.has(g.i)?2:0.5; pctx.stroke(); });
+      pctx.strokeStyle=inS.has(g.i)?'#2C1F14':'#9A7B24'; pctx.lineWidth=inS.has(g.i)?2:0.5; pctx.stroke();
+      if(weighed.has(g.i)){ pctx.fillStyle='#2C1F14'; pctx.font='11px IBM Plex Mono, monospace'; pctx.textAlign='center'; pctx.textBaseline='middle'; pctx.fillText(Math.round(g.w),x,y+1); } });
     pctx.strokeStyle='#9A7B24'; pctx.lineWidth=1.5; pctx.setLineDash([6,6]);
     pctx.beginPath(); pctx.moveTo(pc.width/2,0); pctx.lineTo(pc.width/2,pc.height); pctx.moveTo(0,pc.height/2); pctx.lineTo(pc.width,pc.height/2); pctx.stroke(); pctx.setLineDash([]);
     pctx.fillStyle='#A34860'; pctx.font='22px Cormorant Garamond, serif'; pctx.textBaseline='top';
@@ -285,6 +290,17 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     pctx.textAlign='left'; pctx.fillStyle='#9A7B24'; pctx.font='16px IBM Plex Mono, monospace'; pctx.fillText('GATE',8,pc.height-24);
   }
 
+  pc.addEventListener('click',e=>{ const r=pc.getBoundingClientRect(); const c=Math.floor((e.clientX-r.left)/r.width*COLS), rw=Math.floor((e.clientY-r.top)/r.height*ROWS); if(c<0||rw<0||c>=COLS||rw>=ROWS) return; weighed.add(rw*COLS+c); renderWeigh(); drawPop(); });
+  function renderWeigh(){
+    const n=weighed.size; const vals=[...weighed].map(i=>apples[i].w);
+    $('weighMean').innerHTML=(n?mean(vals).toFixed(1):'–')+'<small>mean of the apples weighed so far, g</small>';
+    let msg=n.toLocaleString()+' of 1,000 weighed';
+    if(n>=3&&n<10) msg+='. Notice how much the mean moves with each apple.';
+    else if(n>=10&&n<25) msg+='. At a minute an apple, the full census is a working day.';
+    else if(n>=25) msg+='. A sample, drawn well, will do the job in minutes. Station II.';
+    $('weighFb').textContent=msg;
+  }
+  $('btnWeighReset').addEventListener('click',()=>{ weighed.clear(); renderWeigh(); drawPop(); });
   // ---- descriptive statistics + histograms ----
   const q=(a,p)=>{ const s=a.slice().sort((x,y)=>x-y); const k=(s.length-1)*p, lo=Math.floor(k), hi=Math.ceil(k); return s[lo]+(s[hi]-s[lo])*(k-lo); };
   const mode=a=>{ const m=new Map(); a.forEach(x=>{ const b=Math.round(x/5)*5; m.set(b,(m.get(b)||0)+1); }); let best=null,bc=0; m.forEach((c,b)=>{ if(c>bc){bc=c;best=b;} }); return best; };
@@ -314,16 +330,15 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     statBox('stats',[['mode, g (5 g bins)',mode(vals)],['median, g',q(vals,.5).toFixed(1)],['mean, g',m.toFixed(1)],['range, g',(Math.max(...vals)-Math.min(...vals)).toFixed(1)],['Q1 to Q3, g',q(vals,.25).toFixed(1)+' to '+q(vals,.75).toFixed(1)],['mean abs. dev.',md.toFixed(2)],['variance',(sd(vals,1)**2).toFixed(1)],['std deviation',sd(vals,1).toFixed(2)]]);
     renderParam();
   }
-  let guess=null;
   function renderParam(){
     const vals=sample.map(i=>apples[i].w);
     if(revealed){ $('popMean').innerHTML=MU.toFixed(1)+'<small>population mean, g</small>'; $('paramTxt').textContent='The 1,000 apples weigh '+MU.toFixed(1)+' g on average, with a standard deviation of '+SIG.toFixed(1)+' g.';
       $('errTxt').textContent=vals.length?('this sample is '+(mean(vals)-MU>=0?'+':'')+(mean(vals)-MU).toFixed(1)+' g from the parameter'):'draw a sample to compare';
-      if(guess!==null){ $('guessFb').textContent='Your guess of '+guess+' g was '+Math.abs(guess-MU).toFixed(1)+' g '+(guess>=MU?'above':'below')+' the parameter'+(vals.length?'; the sample mean was '+Math.abs(mean(vals)-MU).toFixed(1)+' g off.':'.'); $('guessFb').className='fb'; } }
+
+    }
     else { $('popMean').innerHTML='?<small>population mean, g</small>'; $('paramTxt').textContent='The population mean is hidden.'; $('errTxt').textContent='reveal to compare'; }
     $('btnReveal').setAttribute('aria-pressed',String(revealed)); $('btnReveal').textContent=revealed?'Hide the parameter':'Reveal the parameter';
   }
-  $('btnGuess').addEventListener('click',()=>{ const v=parseFloat($('guess').value); if(!isFinite(v)){ $('guessFb').textContent='Type a weight in grams first.'; $('guessFb').className='fb bad'; return; } guess=v; $('guessFb').textContent='Locked in: '+v+' g. Reveal the parameter when you are ready.'; $('guessFb').className='fb good'; if(revealed) renderParam(); });
   $('btnDraw').addEventListener('click',()=>{ sample=drawSample(); renderSample(); });
   $('strategy').addEventListener('change',()=>{ $('stratTxt').textContent=STRAT[$('strategy').value].txt; });
   $('btnReveal').addEventListener('click',()=>{ revealed=!revealed; renderSample(); renderRepeat(); renderCI(); });

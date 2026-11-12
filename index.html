@@ -71,7 +71,7 @@ input[type=number]{width:110px;text-align:center}
 textarea{border-radius:12px;width:100%;max-width:60ch;min-height:80px;resize:vertical;font-size:1rem}
 canvas{width:100%;height:auto;display:block;border:1px solid var(--trim);border-radius:10px;background:var(--label-bg)}
 .tabpanel{width:100%;max-width:720px;display:grid;gap:12px;justify-items:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 6px}
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:760px}
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:800px}
 @media (max-width:620px){.gallery{grid-template-columns:repeat(2,1fr)}}
 .gallery button{font:inherit;padding:8px 8px 10px;border:1px solid var(--trim);border-radius:12px;background:var(--label-bg);color:var(--text);cursor:pointer;display:grid;gap:6px;justify-items:center}
 .gallery button[aria-pressed="true"]{outline:2px solid var(--text);outline-offset:2px;background:var(--neutral)}
@@ -93,6 +93,9 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--trim);border-
 .legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-warm)}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:6px;border:1px solid var(--trim-dk)}
 .em{color:var(--text);white-space:nowrap}
+.tip{position:relative;cursor:help;border-bottom:1px dotted var(--trim-dk)}
+.tip::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);width:max-content;max-width:min(320px,80vw);background:var(--ink);color:var(--neutral);font-size:.85rem;font-style:normal;letter-spacing:0;text-transform:none;line-height:1.35;padding:8px 12px;border-radius:8px;border:1px solid var(--trim);opacity:0;pointer-events:none;transition:opacity .15s;z-index:5;text-align:left;white-space:normal}
+.tip:hover::after,.tip:focus-visible::after,.tip:focus-within::after{opacity:1}
 .ask{width:100%;max-width:720px;border:1px solid var(--trim);border-radius:12px;background:var(--label-bg);padding:14px 16px;display:grid;gap:10px;justify-items:center}
 .ask .q{font-size:1.05rem}
 .ask .fb{font-size:.95rem;color:var(--ink-warm);font-style:italic;min-height:1.4em}
@@ -131,7 +134,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     <button type="button" class="btn" role="tab" id="tabRules" aria-selected="false" aria-controls="rules">The orchard</button>
   </div>
   <div class="tabpanel" id="rules" role="tabpanel" hidden>
-    <p>A village orchard holds 1,000 apples on the trees of four plots. The village wants the mean weight of all 1,000, but weighing every apple is slow, so a census taker weighs a sample. Draw the sample, describe the apples you weighed, then see what repeating the draw teaches.</p>
+    <p>A village orchard holds 1,000 apples on the trees of four plots: the <span class="tip" data-tip="Population: a collection of persons, things, or objects under study">population</span>. The village wants the mean weight of all 1,000, a <span class="tip" data-tip="Parameter: a numerical characteristic of the whole population that can be estimated by a statistic">parameter</span>, but weighing every apple is slow, so a census taker weighs a <span class="tip" data-tip="Sample: a subset studied to gain information about the population">sample</span>. The weights written down are the <span class="tip" data-tip="Data: the result of sampling from a population">data</span>, weight is the <span class="tip" data-tip="Variable: a characteristic or measurement that can be determined for each member of a population">variable</span>, and the sample mean is a <span class="tip" data-tip="Statistic: a number that represents a property of the sample">statistic</span>. Hover any of those words for the definition. Draw the sample, describe the apples you weighed, then see what repeating the draw teaches.</p>
   </div>
 </header>
 
@@ -163,13 +166,14 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
       <option value="clus">Clustered by tree</option>
       <option value="conv">Convenience, nearest the gate</option>
       <option value="snow">Snowball, apples beside an apple</option>
+      <option value="judg">Judgmental, a fixed mix the sampler fills</option>
     </select>
     <label for="nSize">Apples</label>
     <select id="nSize"><option>10</option><option selected>30</option><option>100</option><option>300</option></select>
     <button type="button" class="btn primary" id="btnDraw">Draw</button>
   </div>
   <p class="aux" id="stratTxt">Every apple has the same chance of being weighed.</p>
-  <div class="gallery" id="gallery" role="group" aria-label="Six strategies, one example draw of 30 apples each"></div>
+  <div class="gallery" id="gallery" role="group" aria-label="Seven strategies, one example draw of 30 apples each"></div>
   <div class="pair one">
     <div class="cab cream"><span class="tag">Statistic</span><div class="big" id="sampMean">–<small>sample mean, g</small></div><div class="aux" id="sampN">no sample yet</div></div>
   </div>
@@ -179,7 +183,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     <div class="fb" id="score2">0 of 3 matched</div>
   </div>
   <div class="ask">
-    <div class="q">Which of the six strategies are probability samples, where every apple has a known chance of being chosen? Select all that apply, then check.</div>
+    <div class="q">Which of the seven strategies are probability samples, where every apple has a known chance of being chosen? Select all that apply, then check.</div>
     <div class="choices" id="probChoices"></div>
     <div class="row"><button type="button" class="btn" id="btnProbCheck">Check</button></div>
     <div class="fb" id="probFb"></div>
@@ -190,6 +194,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
 <section class="frame butter" aria-label="Describe">
   <span class="sign">Describe the sample</span>
+  <p class="aux">Descriptive statistics summarise data in a way that meaningful patterns might emerge.</p>
   <canvas id="hist" width="1000" height="400" aria-label="Histogram of sampled weights"></canvas>
   <div class="stats" id="stats"></div>
   <p class="aux">Mode, median and mean are measures of centre. Range, quartiles, mean absolute deviation, variance and standard deviation are measures of spread.</p>
@@ -199,8 +204,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
 <section class="frame blue" aria-label="Repeat">
   <span class="sign">Draw it a thousand times</span>
-  <p class="aux">Keep the strategy and size chosen above. Each draw gives one sample mean. The histogram collects them.</p>
-  <div class="row"><button type="button" class="btn primary" id="btnRepeat">Draw 1,000 samples</button><button type="button" class="btn" id="btnNormal" aria-pressed="false">Lay the normal curve over</button></div>
+  <p class="aux">The strategy is the one chosen above. Each draw gives one sample mean. The histogram collects them.</p>
+  <div class="row"><label for="nRep">Apples per sample</label><select id="nRep"><option>10</option><option selected>30</option><option>100</option><option>300</option></select><button type="button" class="btn primary" id="btnRepeat">Draw 1,000 samples</button><button type="button" class="btn" id="btnNormal" aria-pressed="false">Lay the normal curve over</button></div>
   <canvas id="means" width="1000" height="400" aria-label="Histogram of sample means across repeated draws"></canvas>
   <div class="stats" id="repStats"></div>
   <div class="ask" id="spreadAsk" hidden>
@@ -210,14 +215,16 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   </div>
   <div class="step">
     <h3>Central limit theorem</h3>
-    <p>Each draw gives one sample mean. The histogram above shows where 1,000 of them landed. Three things hold for a probability sample, whatever the shape of the population.</p>
-    <p>The means centre on the parameter. Compare the mean of means in the boxes with the parameter once revealed.</p>
-    <p>The means are close to normally distributed, although the weights in the orchard are skewed to the right. Lay the normal curve over to check.</p>
-    <p>Their spread is the population standard deviation divided by the square root of the sample size, σ/√n. The box for sd of means sits beside σ/√n so the two can be read together. Four times the sample halves the spread.</p>
-    <p class="aux">These three hold when each apple is drawn independently from the same population, written iid. Trees and neighbours break independence, and the bell changes shape.</p>
+    <p class="aux">The sampling distribution of the sample means approaches a normal distribution as the sample size gets larger.</p>
+    <p>The histogram above is that sampling distribution, built from 1,000 draws. It has three properties, and each can be checked on this page.</p>
+    <p><span class="em">Centre.</span> The sample means average out to the population mean. Once the parameter is revealed, the box for the mean of means should match that number.</p>
+    <p><span class="em">Shape.</span> The sample means are close to normal even though the weights in the orchard are skewed. The normal curve button lays the comparison over the histogram.</p>
+    <p><span class="em">Spread.</span> The standard deviation of the sample means is σ/√n, the population standard deviation divided by the square root of the sample size. The boxes for sd of means and σ/√n should agree. Quadrupling the sample halves the spread.</p>
+    <p class="aux">The three properties assume iid draws, independent and identically distributed: like a fair coin, each toss has no effect on the next and each has the same 50:50 chance. Trees and neighbours break independence, and the bell loses its shape.</p>
   </div>
   <div class="step">
     <h3>Law of large numbers</h3>
+    <p class="aux">As the sample size increases, the sample mean approximates the population mean.</p>
     <p class="aux">A different picture: one simple random sample grows from 1 apple to 1,000, and the running mean settles on the parameter.</p>
     <canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas>
   </div>
@@ -227,10 +234,11 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
 <section class="frame pink" aria-label="Infer">
   <span class="sign">From the sample to the orchard</span>
+  <p class="aux">Inferential statistics make generalisations about the populations from which the samples were drawn.</p>
   <p class="aux">One sample gives one interval: the mean plus or minus 1.96 standard errors. Draw 100 samples and see how many intervals hold the parameter.</p>
   <div class="ask">
     <div class="q">Out of 100 intervals built from 95% confidence, how many do you expect to hold the parameter with the strategy chosen above?</div>
-    <div class="row"><input type="number" id="covGuess" min="0" max="100" step="1" placeholder="0 to 100"><button type="button" class="btn primary" id="btnCI">Draw 100 intervals</button></div>
+    <div class="row"><label for="nCI">Apples per sample</label><select id="nCI"><option>10</option><option selected>30</option><option>100</option><option>300</option></select><input type="number" id="covGuess" min="0" max="100" step="1" placeholder="0 to 100"><button type="button" class="btn primary" id="btnCI">Draw 100 intervals</button></div>
     <div class="fb" id="covFb"></div>
   </div>
   <canvas id="ci" width="1000" height="520" aria-label="One hundred confidence intervals"></canvas>
@@ -264,8 +272,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     shuffle(pairs.map((x,i)=>i)).forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt'; b.textContent=pairs[i][1]; b.dataset.i=i;
       b.addEventListener('click',()=>{ if(b.classList.contains('done')||!sel) return; if(sel.dataset.i===b.dataset.i){ sel.classList.add('done'); b.classList.add('done'); sel.setAttribute('aria-pressed','false'); sel=null; matched++; $(scoreId).textContent=matched+' of '+pairs.length+' matched'+(matched===pairs.length?'. All three.':''); } else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),500); } }); D.appendChild(b); });
   }
-  buildMatch([['Population','All 1,000 apples in the orchard'],['Variable','A characteristic measured on each apple, here weight'],['Parameter','The mean weight of all 1,000, the number the village wants']],'terms1','defs1','score1');
-  buildMatch([['Sample','The apples the census taker weighed'],['Data','The weights written down'],['Statistic','A number computed from the sample, such as its mean, which estimates the parameter']],'terms2','defs2','score2');
+  buildMatch([['Population','A collection of persons, things, or objects under study: here, all 1,000 apples'],['Variable','A characteristic or measurement that can be determined for each member of a population: here, weight'],['Parameter','A numerical characteristic of the whole population that can be estimated by a statistic: here, the mean weight of all 1,000']],'terms1','defs1','score1');
+  buildMatch([['Sample','A subset studied to gain information about the population: the apples weighed'],['Data','The result of sampling from a population: the weights written down'],['Statistic','A number that represents a property of the sample: its mean, which estimates the parameter']],'terms2','defs2','score2');
 
   // ---- population: 40 x 25, four plots, skewed weights in grams, fixed seed ----
   const COLS=40, ROWS=25, N=COLS*ROWS;
@@ -280,16 +288,17 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   const W=apples.map(g=>g.w), MU=mean(W), SIG=sd(W), WMIN=Math.min(...W), WMAX=Math.max(...W);
 
   const STRAT={
-    srs:{prob:true,txt:'Every apple has the same chance of being weighed.', f:n=>shuffle(apples.map(g=>g.i)).slice(0,n)},
-    sys:{prob:true,txt:'Walk the rows in order and weigh every kth apple from a random start.', f:n=>{ const k=Math.floor(N/n); const s=rnd(k); const out=[]; for(let j=s;j<N&&out.length<n;j+=k) out.push(j); return out; }},
-    strat:{prob:true,txt:'Each plot contributes apples in proportion to its size, drawn at random within the plot.', f:n=>{ const out=[]; PLOT.forEach((p,pi)=>{ const ids=shuffle(apples.filter(g=>g.p===pi).map(g=>g.i)); out.push(...ids.slice(0,Math.round(n/4))); }); return out.slice(0,n); }},
-    clus:{prob:true,txt:'Each tree carries 25 apples, 5 by 5. Whole trees are chosen at random and every apple on them is weighed.', f:n=>{ const trees=shuffle([...Array(40).keys()]); const out=[]; for(const t of trees){ if(out.length>=n) break; const pc=t%8, pr=Math.floor(t/8); for(let r=pr*5;r<pr*5+5;r++) for(let c=pc*5;c<pc*5+5;c++) out.push(r*COLS+c); } return out.slice(0,n); }},
-    conv:{prob:false,txt:'The census taker stands at the gate and weighs the nearest apples. The gate opens onto the Sun plot, where the apples are heavy.', f:n=>apples.slice().sort((a,b)=>(a.c*a.c+a.r*a.r)-(b.c*b.c+b.r*b.r)).slice(0,n).map(g=>g.i)},
-    snow:{prob:false,txt:'One apple is weighed, then the apples hanging beside that one, then their neighbours, until the sample is full. Neighbours share a plot.', f:n=>{ const start=rnd(N); const seen=new Set([start]); const q=[start]; while(q.length&&seen.size<n){ const g=apples[q.shift()]; const nb=shuffle([[1,0],[-1,0],[0,1],[0,-1]]); for(const [dc,dr] of nb){ const c=g.c+dc,r=g.r+dr; if(c<0||r<0||c>=COLS||r>=ROWS) continue; const j=r*COLS+c; if(!seen.has(j)){ seen.add(j); q.push(j); if(seen.size>=n) break; } } } return [...seen]; }}
+    srs:{prob:true,txt:'Simple random: draw a random sample by lottery or a computer-generated random list. Every apple has the same chance of being weighed.', f:n=>shuffle(apples.map(g=>g.i)).slice(0,n)},
+    sys:{prob:true,txt:'Systematic: a fixed rule such as a fixed interval. Walk the rows in order and weigh every kth apple from a random start.', f:n=>{ const k=Math.floor(N/n); const s=rnd(k); const out=[]; for(let j=s;j<N&&out.length<n;j+=k) out.push(j); return out; }},
+    strat:{prob:true,txt:'Stratified: the population is divided into homogeneous subgroups, then sampled at random within each. Each plot contributes apples in proportion to its size, drawn at random within the plot.', f:n=>{ const out=[]; PLOT.forEach((p,pi)=>{ const ids=shuffle(apples.filter(g=>g.p===pi).map(g=>g.i)); out.push(...ids.slice(0,Math.round(n/4))); }); return out.slice(0,n); }},
+    clus:{prob:true,txt:'Clustered: the population is too large to list, so clusters are chosen at random first. Each tree carries 25 apples, 5 by 5; whole trees are chosen at random and every apple on them is weighed.', f:n=>{ const trees=shuffle([...Array(40).keys()]); const out=[]; for(const t of trees){ if(out.length>=n) break; const pc=t%8, pr=Math.floor(t/8); for(let r=pr*5;r<pr*5+5;r++) for(let c=pc*5;c<pc*5+5;c++) out.push(r*COLS+c); } return out.slice(0,n); }},
+    conv:{prob:false,txt:'Convenience: enrol whatever is available and accessible, quick and inexpensive. The census taker stands at the gate and weighs the nearest apples. The gate opens onto the Sun plot, where the apples are heavy.', f:n=>apples.slice().sort((a,b)=>(a.c*a.c+a.r*a.r)-(b.c*b.c+b.r*b.r)).slice(0,n).map(g=>g.i)},
+    snow:{prob:false,txt:'Snowball: each subject gives access to its own network. One apple is weighed, then the apples hanging beside that one, then their neighbours, until the sample is full. Neighbours share a plot.'},
+    judg:{prob:false,txt:'Judgmental: the sampler fixes the mix in advance, such as a male to female ratio, and picks to fill it. A quarter of the sample from each plot, chosen as the apples that look most typical from the path through the middle of the plot.', f:n=>{ const out=[]; PLOT.forEach((p,pi)=>{ const cx=(pi%2?30:10), cy=(pi<2?6:18); const ids=apples.filter(g=>g.p===pi).sort((a,b)=>((a.c-cx)**2+(a.r-cy)**2)-((b.c-cx)**2+(b.r-cy)**2)).map(g=>g.i); out.push(...ids.slice(0,Math.round(n/4))); }); return out.slice(0,n); }, f:n=>{ const start=rnd(N); const seen=new Set([start]); const q=[start]; while(q.length&&seen.size<n){ const g=apples[q.shift()]; const nb=shuffle([[1,0],[-1,0],[0,1],[0,-1]]); for(const [dc,dr] of nb){ const c=g.c+dc,r=g.r+dr; if(c<0||r<0||c>=COLS||r>=ROWS) continue; const j=r*COLS+c; if(!seen.has(j)){ seen.add(j); q.push(j); if(seen.size>=n) break; } } } return [...seen]; }}
   };
   const stratName=()=>$('strategy').options[$('strategy').selectedIndex].text.toLowerCase();
   // ---- gallery: one small map per strategy, an example draw of 30 ----
-  const GAL=[['srs','Simple random'],['sys','Systematic'],['strat','Stratified'],['clus','Clustered'],['conv','Convenience'],['snow','Snowball']];
+  const GAL=[['srs','Simple random'],['sys','Systematic'],['strat','Stratified'],['clus','Clustered'],['conv','Convenience'],['snow','Snowball'],['judg','Judgmental']];
   const gal={};
   function drawMini(key){
     const cv=gal[key], ctx=cv.getContext('2d'), cw=cv.width/COLS, ch=cv.height/ROWS; ctx.clearRect(0,0,cv.width,cv.height);
@@ -298,7 +307,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     apples.forEach(g=>{ ctx.beginPath(); ctx.arc(g.c*cw+cw/2,g.r*ch+ch/2,inS.has(g.i)?cw*0.42:cw*0.28,0,Math.PI*2); ctx.fillStyle=inS.has(g.i)?'#A34860':PLOT[g.p].col; ctx.globalAlpha=inS.has(g.i)?1:0.35; ctx.fill(); ctx.globalAlpha=1; });
     ctx.strokeStyle='#9A7B24'; ctx.lineWidth=1; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(cv.width/2,0); ctx.lineTo(cv.width/2,cv.height); ctx.moveTo(0,cv.height/2); ctx.lineTo(cv.width,cv.height/2); ctx.stroke(); ctx.setLineDash([]);
   }
-  GAL.forEach(([key,label])=>{ const b=document.createElement('button'); b.type='button'; b.dataset.v=key; b.setAttribute('aria-pressed',String(key===$('strategy').value)); const cv=document.createElement('canvas'); cv.width=240; cv.height=150; cv.style.width='100%'; cv.style.height='auto'; cv.setAttribute('aria-hidden','true'); const sp=document.createElement('span'); sp.textContent=label; b.appendChild(cv); b.appendChild(sp); gal[key]=cv; drawMini(key);
+  GAL.forEach(([key,label])=>{ const b=document.createElement('button'); b.type='button'; b.dataset.v=key; b.classList.add('tip'); b.dataset.tip=STRAT[key].txt; b.setAttribute('aria-pressed',String(key===$('strategy').value)); const cv=document.createElement('canvas'); cv.width=240; cv.height=150; cv.style.width='100%'; cv.style.height='auto'; cv.setAttribute('aria-hidden','true'); const sp=document.createElement('span'); sp.textContent=label; b.appendChild(cv); b.appendChild(sp); gal[key]=cv; drawMini(key);
     b.addEventListener('click',()=>{ $('strategy').value=key; $('strategy').dispatchEvent(new Event('change')); drawMini(key); }); $('gallery').appendChild(b); });
   function syncGallery(){ [...$('gallery').children].forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===$('strategy').value))); }
   function drawSample(){ return STRAT[$('strategy').value].f(parseInt($('nSize').value,10)); }
@@ -376,14 +385,14 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   $('btnReveal').addEventListener('click',()=>{ revealed=!revealed; renderSample(); renderRepeat(); renderCI(); });
 
   // ---- probability-sample check ----
-  const sel=$('strategy'); [...sel.options].forEach(o=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'; b.dataset.v=o.value; b.textContent=o.text; b.setAttribute('aria-pressed','false'); b.addEventListener('click',()=>b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))); $('probChoices').appendChild(b); });
+  const sel=$('strategy'); [...sel.options].forEach(o=>{ const b=document.createElement('button'); b.type='button'; b.className='chip tip'; b.dataset.tip=STRAT[o.value].txt; b.dataset.v=o.value; b.textContent=o.text; b.setAttribute('aria-pressed','false'); b.addEventListener('click',()=>b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))); $('probChoices').appendChild(b); });
   $('btnProbCheck').addEventListener('click',()=>{ let ok=0; const chips=[...$('probChoices').children]; chips.forEach(b=>{ const chosen=b.getAttribute('aria-pressed')==='true', truth=STRAT[b.dataset.v].prob; b.classList.toggle('right',chosen===truth&&truth); b.classList.toggle('wrong',chosen!==truth); if(chosen===truth) ok++; });
-    $('probFb').textContent=ok===chips.length?'All six right. The first four give every apple a known chance; convenience and snowball do not.':(ok+' of 6 right. Probability samples are the four where chance, not the census taker or the apples, decides who is weighed.'); $('probFb').className='fb '+(ok===chips.length?'good':'bad'); });
+    $('probFb').textContent=ok===chips.length?'All seven right. The first four give every apple a known chance; convenience, snowball and judgmental do not.':(ok+' of 7 right. Probability samples are the four where chance, not the census taker or the apples, decides which apples are weighed.'); $('probFb').className='fb '+(ok===chips.length?'good':'bad'); });
 
   // ---- repeat ----
   const mc=$('means'), mctx=mc.getContext('2d');
   let means=[], repN=0, repStrat='', showNormal=false, spreadPred=null, firstN=null, altN=null; const sdByN={};
-  [...$('spreadChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('spreadChoices').children].forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); spreadPred=b.dataset.v; $('spreadFb').textContent='You said '+b.textContent+'. Set the sample size to '+altN+' above and draw 1,000 samples again.'; $('spreadFb').className='fb'; }));
+  [...$('spreadChoices').children].forEach(b=>b.addEventListener('click',()=>{ [...$('spreadChoices').children].forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); spreadPred=b.dataset.v; $('spreadFb').textContent='You said '+b.textContent+'. Set apples per sample to '+altN+' and draw 1,000 samples again.'; $('spreadFb').className='fb'; }));
   function renderRepeat(){
     if(!means.length){ histogram(mctx,mc,[],{lo:WMIN,hi:WMAX,bins:60,color:'#4F5D75',note:'sample mean, g'}); statBox('repStats',[]); return; }
     const mm=mean(means), ms=sd(means);
@@ -394,11 +403,11 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     if(revealed) items.push(['bias, g',(mm-MU>=0?'+':'')+(mm-MU).toFixed(2)],['σ/√n, g',(SIG/Math.sqrt(repN)).toFixed(2)]);
     statBox('repStats',items);
     sdByN[repN]=ms;
-    if(firstN===null){ firstN=repN; altN=repN<100?100:30; $('spreadQ').textContent='You drew 1,000 samples of '+firstN+' apples. If each sample had '+altN+' apples instead, would the sample means spread out more, the same, or less?'; $('spreadFb').textContent='Choose first, then change the sample size and draw again.'; $('spreadAsk').hidden=false; }
+    if(firstN===null){ firstN=repN; altN=repN<100?100:30; $('spreadQ').textContent='You drew 1,000 samples of '+firstN+' apples. If each sample had '+altN+' apples instead, would the sample means spread out more, the same, or less?'; $('spreadFb').textContent='Choose first, then change apples per sample and draw again.'; $('spreadAsk').hidden=false; }
     if(spreadPred&&sdByN[firstN]!==undefined&&sdByN[altN]!==undefined){ const a=sdByN[firstN], b=sdByN[altN]; const bigger=altN>firstN; const narrower=bigger?b<a*0.9:a<b*0.9, same=!narrower&&Math.abs(a-b)<=0.1*Math.max(a,b); const truth=narrower?'narrower':(same?'same':'wider'); const word={narrower:'less',same:'the same',wider:'more'};
       $('spreadFb').textContent='At '+firstN+' apples the sd of the means was '+sdByN[firstN].toFixed(2)+' g; at '+altN+' it was '+sdByN[altN].toFixed(2)+' g: they spread '+word[truth]+'. '+(spreadPred===truth?'You were right.':'You said '+word[spreadPred]+'.'); $('spreadFb').className='fb '+(spreadPred===truth?'good':'bad'); }
   }
-  $('btnRepeat').addEventListener('click',()=>{ repN=parseInt($('nSize').value,10); repStrat=stratName(); means=[]; for(let k=0;k<1000;k++){ const s=STRAT[$('strategy').value].f(repN); means.push(mean(s.map(i=>apples[i].w))); } renderRepeat(); });
+  $('btnRepeat').addEventListener('click',()=>{ repN=parseInt($('nRep').value,10); repStrat=stratName(); means=[]; for(let k=0;k<1000;k++){ const s=STRAT[$('strategy').value].f(repN); means.push(mean(s.map(i=>apples[i].w))); } renderRepeat(); });
   $('btnNormal').addEventListener('click',()=>{ showNormal=!showNormal; $('btnNormal').setAttribute('aria-pressed',String(showNormal)); if(showNormal&&!revealed){ revealed=true; renderSample(); } renderRepeat(); renderCI(); });
 
   // ---- law of large numbers ----
@@ -429,7 +438,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     if(revealed){ $('covFb').textContent=(covGuess!==null?'You expected '+covGuess+'; ':'')+hit+' of 100 held the parameter'+(STRAT[$('strategy').value].prob?'. With a probability sample the long-run answer is about 95.':'. With a non-probability sample the intervals are precise about the wrong number.'); $('covFb').className='fb'; }
     else { $('covFb').textContent='Reveal the parameter to count the hits.'; $('covFb').className='fb'; }
   }
-  $('btnCI').addEventListener('click',()=>{ const g=parseInt($('covGuess').value,10); covGuess=isFinite(g)?g:null; ciN=parseInt($('nSize').value,10); ciStrat=stratName(); cis=[]; for(let k=0;k<100;k++){ const v=STRAT[$('strategy').value].f(ciN).map(i=>apples[i].w); const m=mean(v), se=sd(v,1)/Math.sqrt(v.length); cis.push([m-1.96*se,m+1.96*se]); } renderCI(); });
+  $('btnCI').addEventListener('click',()=>{ const g=parseInt($('covGuess').value,10); covGuess=isFinite(g)?g:null; ciN=parseInt($('nCI').value,10); ciStrat=stratName(); cis=[]; for(let k=0;k<100;k++){ const v=STRAT[$('strategy').value].f(ciN).map(i=>apples[i].w); const m=mean(v), se=sd(v,1)/Math.sqrt(v.length); cis.push([m-1.96*se,m+1.96*se]); } renderCI(); });
 
   renderSample(); renderRepeat(); drawLLN(); renderCI();
 })();

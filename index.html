@@ -66,6 +66,13 @@ input[type=number]{width:110px;text-align:center}
 textarea{border-radius:12px;width:100%;max-width:60ch;min-height:80px;resize:vertical;font-size:1rem}
 canvas{width:100%;height:auto;display:block;border:1px solid var(--trim);border-radius:10px;background:var(--label-bg)}
 .tabpanel{width:100%;max-width:720px;display:grid;gap:12px;justify-items:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:14px 6px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:760px}
+@media (max-width:620px){.gallery{grid-template-columns:repeat(2,1fr)}}
+.gallery button{font:inherit;padding:8px 8px 10px;border:1px solid var(--trim);border-radius:12px;background:var(--label-bg);color:var(--text);cursor:pointer;display:grid;gap:6px;justify-items:center}
+.gallery button[aria-pressed="true"]{outline:2px solid var(--text);outline-offset:2px;background:var(--neutral)}
+.gallery button:focus-visible{outline:2px solid var(--stroke);outline-offset:2px}
+.gallery canvas{border-radius:6px}
+.gallery span{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;align-items:stretch}
 .pair.one{grid-template-columns:1fr;max-width:420px}
 @media (max-width:620px){.pair{grid-template-columns:1fr}}
@@ -166,6 +173,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     <button type="button" class="btn primary" id="btnDraw">Draw</button>
   </div>
   <p class="aux" id="stratTxt">Every apple has the same chance of being weighed.</p>
+  <div class="gallery" id="gallery" role="group" aria-label="Six strategies, one example draw of 30 apples each"></div>
   <div class="pair one">
     <div class="cab cream"><span class="tag">Statistic</span><div class="big" id="sampMean">–<small>sample mean, g</small></div><div class="aux" id="sampN">no sample yet</div></div>
   </div>
@@ -269,6 +277,19 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     snow:{prob:false,txt:'One apple is weighed, then the apples hanging beside that one, then their neighbours, until the sample is full. Neighbours share a plot.', f:n=>{ const start=rnd(N); const seen=new Set([start]); const q=[start]; while(q.length&&seen.size<n){ const g=apples[q.shift()]; const nb=shuffle([[1,0],[-1,0],[0,1],[0,-1]]); for(const [dc,dr] of nb){ const c=g.c+dc,r=g.r+dr; if(c<0||r<0||c>=COLS||r>=ROWS) continue; const j=r*COLS+c; if(!seen.has(j)){ seen.add(j); q.push(j); if(seen.size>=n) break; } } } return [...seen]; }}
   };
   const stratName=()=>$('strategy').options[$('strategy').selectedIndex].text.toLowerCase();
+  // ---- gallery: one small map per strategy, an example draw of 30 ----
+  const GAL=[['srs','Simple random'],['sys','Systematic'],['strat','Stratified'],['clus','Clustered'],['conv','Convenience'],['snow','Snowball']];
+  const gal={};
+  function drawMini(key){
+    const cv=gal[key], ctx=cv.getContext('2d'), cw=cv.width/COLS, ch=cv.height/ROWS; ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.fillStyle='#FAF4E8'; ctx.fillRect(0,0,cv.width,cv.height);
+    const inS=new Set(STRAT[key].f(30));
+    apples.forEach(g=>{ ctx.beginPath(); ctx.arc(g.c*cw+cw/2,g.r*ch+ch/2,inS.has(g.i)?cw*0.42:cw*0.28,0,Math.PI*2); ctx.fillStyle=inS.has(g.i)?'#4F5D75':PLOT[g.p].col; ctx.globalAlpha=inS.has(g.i)?1:0.35; ctx.fill(); ctx.globalAlpha=1; });
+    ctx.strokeStyle='#9A7B24'; ctx.lineWidth=1; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(cv.width/2,0); ctx.lineTo(cv.width/2,cv.height); ctx.moveTo(0,cv.height/2); ctx.lineTo(cv.width,cv.height/2); ctx.stroke(); ctx.setLineDash([]);
+  }
+  GAL.forEach(([key,label])=>{ const b=document.createElement('button'); b.type='button'; b.dataset.v=key; b.setAttribute('aria-pressed',String(key===$('strategy').value)); const cv=document.createElement('canvas'); cv.width=240; cv.height=150; cv.style.width='100%'; cv.style.height='auto'; cv.setAttribute('aria-hidden','true'); const sp=document.createElement('span'); sp.textContent=label; b.appendChild(cv); b.appendChild(sp); gal[key]=cv; drawMini(key);
+    b.addEventListener('click',()=>{ $('strategy').value=key; $('strategy').dispatchEvent(new Event('change')); drawMini(key); }); $('gallery').appendChild(b); });
+  function syncGallery(){ [...$('gallery').children].forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===$('strategy').value))); }
   function drawSample(){ return STRAT[$('strategy').value].f(parseInt($('nSize').value,10)); }
 
   // ---- population canvas: apples as dots with a stem ----
@@ -339,8 +360,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     else { $('popMean').innerHTML='?<small>population mean, g</small>'; $('paramTxt').textContent='The population mean is hidden.'; $('errTxt').textContent='reveal to compare'; }
     $('btnReveal').setAttribute('aria-pressed',String(revealed)); $('btnReveal').textContent=revealed?'Hide the parameter':'Reveal the parameter';
   }
-  $('btnDraw').addEventListener('click',()=>{ sample=drawSample(); renderSample(); });
-  $('strategy').addEventListener('change',()=>{ $('stratTxt').textContent=STRAT[$('strategy').value].txt; });
+  $('btnDraw').addEventListener('click',()=>{ sample=drawSample(); renderSample(); drawMini($('strategy').value); });
+  $('strategy').addEventListener('change',()=>{ $('stratTxt').textContent=STRAT[$('strategy').value].txt; syncGallery(); });
   $('btnReveal').addEventListener('click',()=>{ revealed=!revealed; renderSample(); renderRepeat(); renderCI(); });
 
   // ---- probability-sample check ----

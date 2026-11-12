@@ -208,9 +208,18 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     <div class="choices" id="spreadChoices"><button type="button" class="chip" data-v="wider" aria-pressed="false">more</button><button type="button" class="chip" data-v="same" aria-pressed="false">the same</button><button type="button" class="chip" data-v="narrower" aria-pressed="false">less</button></div>
     <div class="fb" id="spreadFb"></div>
   </div>
-  <div class="pair">
-    <div class="cab cream"><h3>Law of large numbers</h3><p class="aux">One simple random sample grows from 1 apple to 1,000. The running mean settles on the parameter.</p><canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas></div>
-    <div class="cab cream"><h3>Central limit theorem</h3><p class="aux">The population of weights is skewed. The sample means are not: across draws they pile up in a bell around the parameter, and the bell narrows as the sample grows, by one over the square root of n.</p><p class="aux">iid: each apple drawn independently from the same population. Trees and neighbours break independence, and the bell changes shape.</p></div>
+  <div class="step">
+    <h3>Central limit theorem</h3>
+    <p>Each draw gives one sample mean. The histogram above shows where 1,000 of them landed. Three things hold for a probability sample, whatever the shape of the population.</p>
+    <p>The means centre on the parameter. Compare the mean of means in the boxes with the parameter once revealed.</p>
+    <p>The means are close to normally distributed, although the weights in the orchard are skewed to the right. Lay the normal curve over to check.</p>
+    <p>Their spread is the population standard deviation divided by the square root of the sample size, σ/√n. The box for sd of means sits beside σ/√n so the two can be read together. Four times the sample halves the spread.</p>
+    <p class="aux">These three hold when each apple is drawn independently from the same population, written iid. Trees and neighbours break independence, and the bell changes shape.</p>
+  </div>
+  <div class="step">
+    <h3>Law of large numbers</h3>
+    <p class="aux">A different picture: one simple random sample grows from 1 apple to 1,000, and the running mean settles on the parameter.</p>
+    <canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas>
   </div>
 </section>
 

@@ -114,10 +114,10 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--trim);border-
 .mt.shake{background:var(--pink)}
 .closing .quote{font-style:italic;font-size:1.25rem;max-width:56ch;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 6px;color:var(--ink);margin:0 auto}
 .link{color:var(--text);text-decoration:none;border-bottom:1px solid var(--trim)}
-footer{margin-top:34px;margin-inline:-16px;background:var(--text);color:var(--neutral);border-top:1px solid var(--trim);padding:18px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
-footer>:first-child{justify-self:start} footer>:nth-child(2){justify-self:center;color:var(--butter);letter-spacing:.5em;padding-left:.5em} footer>:last-child{justify-self:end}
+footer{margin-top:34px;margin-inline:-16px;background:var(--text);color:var(--neutral);border-top:1px solid var(--trim);padding:18px 16px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
+footer .orn{color:var(--butter);letter-spacing:.5em;padding-left:.5em}
 footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(--trim)}
-@media (max-width:560px){footer{grid-template-columns:1fr;gap:6px;text-align:center} footer>*{justify-self:center!important}}
+
 </style>
 
 <div class="wrap">
@@ -252,7 +252,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   <div class="closing"><div class="quote">A probability sample is wrong by chance, and chance shrinks with size. A convenience sample is wrong by design, and size does nothing. The sampling rule decides what the data mean, just as the host does behind the <a class="link" href="https://jerchenn.github.io/monty-hall/">three doors</a>.</div></div>
 </section>
 
-<footer><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span><span>✦ · ✦</span><span>University of Cambridge</span></footer>
+<footer><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span><span class="orn">✦</span><span>Orchard Census</span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/stata/">The Do-File</a></span></footer>
 </div>
 
 <script>

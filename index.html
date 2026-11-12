@@ -19,7 +19,7 @@
   --text:#A34860; --mauve:#BFA0AC; --mauve-lt:#DFCBD2; --trim:#C8A030; --trim-dk:#9A7B24;
   --neutral:#F0E8D8; --label-bg:#FAF4E8; --butter:#F4DBB2;
   --ink:#2C1F14; --ink-warm:#6E5140; --rule:#D8C8A0;
-  --apple-red:#C4655C; --apple-green:#8FA882; --apple-russet:#B5844E; --apple-gold:#D9B85A;
+  --apple-red:#C9685E; --apple-green:#7FA07A; --apple-russet:#B07E48; --apple-gold:#D8B250;
   --display:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
   --mono:"IBM Plex Mono","Courier New",monospace;
   color-scheme:light;
@@ -48,7 +48,8 @@ p{margin:0 auto;max-width:60ch}
 .frame{position:relative;background:var(--butter);border:1px solid var(--trim);border-radius:14px;padding:26px 22px 28px;display:grid;gap:16px;justify-items:center}
 .frame::after{content:"";position:absolute;inset:6px;border:1px solid var(--trim);border-radius:9px;pointer-events:none}
 .frame.pink{background:var(--pink);background-image:linear-gradient(170deg,var(--pink-lt),var(--pink) 60%,var(--pink-dk))}
-.frame.blue{background:var(--surface);background-image:radial-gradient(ellipse at 50% 42%,transparent 45%,rgba(44,31,20,.10) 100%)}
+.frame.blue{background:var(--surface-lt);background-image:radial-gradient(ellipse at 50% 42%,transparent 45%,rgba(44,31,20,.08) 100%)}
+.frame.celadon{background:#CBE3DE;background-image:linear-gradient(170deg,#D6EAE5,#CBE3DE 60%,#BFD9D3)}
 .frame.butter{background:var(--butter)} .frame.mauve{background:var(--mauve-lt)}
 .frame>*{position:relative;z-index:1}
 .title{display:grid;gap:4px;justify-items:center}
@@ -116,9 +117,9 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
 <header class="frame butter" aria-label="Title">
   <div class="apples" aria-hidden="true">
-    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#C4655C"/></svg>
-    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#8FA882"/></svg>
-    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#D9B85A"/></svg>
+    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#C9685E"/></svg>
+    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#7FA07A"/></svg>
+    <svg viewBox="0 0 40 40"><path d="M20 9 q1 -5 5 -6" stroke="#637040" stroke-width="2" fill="none"/><path d="M20 10 q6 -6 10 -1 q-4 6 -10 1z" fill="#9FB295"/><path d="M11 14 q4 -5 9 -1 q5 -4 9 1 q6 8 -1 19 q-4 5 -8 3 q-4 2 -8 -3 q-7 -11 -1 -19z" fill="#D8B250"/></svg>
   </div>
   <div class="title">
     <div class="small">Population and sample</div>
@@ -127,36 +128,30 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   </div>
   <div class="row" role="tablist" aria-label="Information">
     <button type="button" class="btn" role="tab" id="tabRules" aria-selected="false" aria-controls="rules">The orchard</button>
-    <button type="button" class="btn" role="tab" id="tabAbout" aria-selected="false" aria-controls="about">Match the terms</button>
   </div>
   <div class="tabpanel" id="rules" role="tabpanel" hidden>
     <p>A village orchard holds 1,000 apples on the trees of four plots. The village wants the mean weight of all 1,000, but weighing every apple is slow, so a census taker weighs a sample. Draw the sample, describe the apples you weighed, then see what repeating the draw teaches.</p>
   </div>
-  <div class="tabpanel" id="about" role="tabpanel" hidden>
-    <p class="aux">Click a term, then the definition that fits. Six pairs.</p>
-    <div class="match"><div class="col" id="terms"></div><div class="col" id="defs"></div></div>
-    <div class="aux" id="matchScore">0 of 6 matched</div>
-  </div>
 </header>
 
-<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station I · Population</span></div>
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station I · Population and sample</span></div>
 
-<section class="frame pink" aria-label="Population">
+<section class="frame celadon" aria-label="Population and sample">
   <span class="sign">One thousand apples</span>
   <p class="aux">Each dot is an apple, coloured by plot and variety. The darker the dot, the heavier the apple. The gate is at the top left. Click any apple to weigh that one.</p>
   <canvas id="pop" width="1000" height="640" aria-label="The population of apples, with sampled apples highlighted"></canvas>
-  <div class="legend"><span><i style="background:#C4655C"></i>Sun · red</span><span><i style="background:#8FA882"></i>Hill · green</span><span><i style="background:#B5844E"></i>Shade · russet</span><span><i style="background:#D9B85A"></i>Brook · gold</span><span><i style="background:#4F5D75"></i>In the sample</span></div>
+  <div class="legend"><span><i style="background:#C9685E"></i>Sun · red</span><span><i style="background:#7FA07A"></i>Hill · green</span><span><i style="background:#B07E48"></i>Shade · russet</span><span><i style="background:#D8B250"></i>Brook · gold</span><span><i style="background:#A34860"></i>In the sample</span></div>
   <div class="ask">
-    <div class="q" id="weighQ">The village wants the mean weight of all 1,000. Start weighing.</div>
+    <div class="q" id="weighQ">The village wants the mean weight of all 1,000. Start weighing. The true mean stays hidden until the last station.</div>
     <div class="row"><div class="big" id="weighMean">–<small>mean of the apples weighed so far, g</small></div></div>
     <div class="fb" id="weighFb">0 of 1,000 weighed</div>
     <div class="row"><button type="button" class="btn" id="btnWeighReset">Put them back</button></div>
   </div>
-</section>
-
-<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Sample</span></div>
-
-<section class="frame blue" aria-label="Sample">
+  <div class="ask">
+    <div class="q">Three words for what you are looking at. Click a term, then its meaning.</div>
+    <div class="match"><div class="col" id="terms1"></div><div class="col" id="defs1"></div></div>
+    <div class="fb" id="score1">0 of 3 matched</div>
+  </div>
   <span class="sign">Weigh a sample</span>
   <div class="row">
     <label for="strategy">Strategy</label>
@@ -178,6 +173,11 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     <div class="cab cream"><span class="tag">Statistic</span><div class="big" id="sampMean">–<small>sample mean, g</small></div><div class="aux" id="sampN">no sample yet</div></div>
   </div>
   <div class="ask">
+    <div class="q">Three more words for what you just did. Click a term, then its meaning.</div>
+    <div class="match"><div class="col" id="terms2"></div><div class="col" id="defs2"></div></div>
+    <div class="fb" id="score2">0 of 3 matched</div>
+  </div>
+  <div class="ask">
     <div class="q">Which of the six strategies are probability samples, where every apple has a known chance of being chosen? Select all that apply, then check.</div>
     <div class="choices" id="probChoices"></div>
     <div class="row"><button type="button" class="btn" id="btnProbCheck">Check</button></div>
@@ -185,7 +185,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   </div>
 </section>
 
-<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station III · Describe</span></div>
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Describe</span></div>
 
 <section class="frame butter" aria-label="Describe">
   <span class="sign">Describe the sample</span>
@@ -194,9 +194,9 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   <p class="aux">Mode, median and mean are measures of centre. Range, quartiles, mean absolute deviation, variance and standard deviation are measures of spread.</p>
 </section>
 
-<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station IV · Repeat</span></div>
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station III · Repeat</span></div>
 
-<section class="frame mauve" aria-label="Repeat">
+<section class="frame blue" aria-label="Repeat">
   <span class="sign">Draw it a thousand times</span>
   <p class="aux">Keep the strategy and size chosen above. Each draw gives one sample mean. The histogram collects them.</p>
   <div class="ask">
@@ -213,7 +213,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   </div>
 </section>
 
-<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station V · Infer</span></div>
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station IV · Infer</span></div>
 
 <section class="frame pink" aria-label="Infer">
   <span class="sign">From the sample to the orchard</span>
@@ -225,6 +225,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   </div>
   <canvas id="ci" width="1000" height="520" aria-label="One hundred confidence intervals"></canvas>
   <div class="stats" id="ciStats"></div>
+  <h3>Behind the curtain</h3>
+  <p class="aux">In real research this button does not exist. Here it does, once, at the end.</p>
   <div class="pair one">
     <div class="cab butter"><span class="tag">Parameter</span><div class="big" id="popMean">?<small>population mean, g</small></div><div class="aux" id="errTxt">reveal to compare</div></div>
   </div>
@@ -238,24 +240,28 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 <script>
 (function(){
   const $=id=>document.getElementById(id);
-  const panels={tabRules:'rules',tabAbout:'about'};
+  const panels={tabRules:'rules'};
   function showPanel(w){ Object.keys(panels).forEach(k=>{ $(k).setAttribute('aria-selected',String(k===w)); $(k).setAttribute('aria-pressed',String(k===w)); $(panels[k]).hidden=(k!==w); }); }
   Object.keys(panels).forEach(k=>$(k).addEventListener('click',()=>showPanel($(k).getAttribute('aria-selected')==='true'?null:k)));
 
-  // ---- matching exercise ----
-  const TERMS=[['Population','All 1,000 apples in the orchard'],['Sample','The apples the census taker weighs'],['Data','The weights written down'],['Variable','A characteristic measured on each apple, such as weight'],['Statistic','A number computed from the sample, such as its mean'],['Parameter','The number for the whole orchard, which the statistic estimates']];
+  // ---- matching exercises, one per station where the terms arise ----
   const rnd=n=>Math.floor(Math.random()*n);
   const shuffle=a=>{ for(let k=a.length-1;k>0;k--){ const m=rnd(k+1); [a[k],a[m]]=[a[m],a[k]]; } return a; };
-  let selTerm=null, matched=0;
-  const termOrder=shuffle(TERMS.map((t,i)=>i)), defOrder=shuffle(TERMS.map((t,i)=>i));
-  termOrder.forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt term'; b.textContent=TERMS[i][0]; b.dataset.i=i; b.setAttribute('aria-pressed','false'); b.addEventListener('click',()=>{ if(b.classList.contains('done')) return; document.querySelectorAll('.mt.term').forEach(x=>x.setAttribute('aria-pressed','false')); selTerm=b; b.setAttribute('aria-pressed','true'); }); $('terms').appendChild(b); });
-  defOrder.forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt'; b.textContent=TERMS[i][1]; b.dataset.i=i; b.addEventListener('click',()=>{ if(b.classList.contains('done')||!selTerm) return; if(selTerm.dataset.i===b.dataset.i){ selTerm.classList.add('done'); b.classList.add('done'); selTerm.setAttribute('aria-pressed','false'); selTerm=null; matched++; $('matchScore').textContent=matched+' of 6 matched'+(matched===6?'. All six.':''); } else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),500); } }); $('defs').appendChild(b); });
+  function buildMatch(pairs,termsId,defsId,scoreId){
+    let sel=null, matched=0; const T=$(termsId), D=$(defsId);
+    shuffle(pairs.map((x,i)=>i)).forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt term'; b.textContent=pairs[i][0]; b.dataset.i=i; b.setAttribute('aria-pressed','false');
+      b.addEventListener('click',()=>{ if(b.classList.contains('done')) return; [...T.children].forEach(x=>x.setAttribute('aria-pressed','false')); sel=b; b.setAttribute('aria-pressed','true'); }); T.appendChild(b); });
+    shuffle(pairs.map((x,i)=>i)).forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt'; b.textContent=pairs[i][1]; b.dataset.i=i;
+      b.addEventListener('click',()=>{ if(b.classList.contains('done')||!sel) return; if(sel.dataset.i===b.dataset.i){ sel.classList.add('done'); b.classList.add('done'); sel.setAttribute('aria-pressed','false'); sel=null; matched++; $(scoreId).textContent=matched+' of '+pairs.length+' matched'+(matched===pairs.length?'. All three.':''); } else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),500); } }); D.appendChild(b); });
+  }
+  buildMatch([['Population','All 1,000 apples in the orchard'],['Variable','A characteristic measured on each apple, here weight'],['Parameter','The mean weight of all 1,000, the number the village wants']],'terms1','defs1','score1');
+  buildMatch([['Sample','The apples the census taker weighed'],['Data','The weights written down'],['Statistic','A number computed from the sample, such as its mean, which estimates the parameter']],'terms2','defs2','score2');
 
   // ---- population: 40 x 25, four plots, skewed weights in grams, fixed seed ----
   const COLS=40, ROWS=25, N=COLS*ROWS;
   let seed=20261112; const srand=()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
   const gauss=r=>{ let u=0,v=0; while(u===0)u=r(); while(v===0)v=r(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
-  const PLOT=[{name:'Sun',mu:190,col:'#C4655C'},{name:'Hill',mu:130,col:'#8FA882'},{name:'Shade',mu:155,col:'#B5844E'},{name:'Brook',mu:215,col:'#D9B85A'}];
+  const PLOT=[{name:'Sun',mu:190,col:'#C9685E'},{name:'Hill',mu:130,col:'#7FA07A'},{name:'Shade',mu:155,col:'#B07E48'},{name:'Brook',mu:215,col:'#D8B250'}];
   const apples=[];
   for(let i=0;i<N;i++){ const c=i%COLS, r=Math.floor(i/COLS); const p=(c<COLS/2?0:1)+(r<ROWS/2?0:2);
     apples.push({i,c,r,p,w:Math.round(Math.exp(Math.log(PLOT[p].mu)+0.16*gauss(srand))*10)/10}); }
@@ -279,7 +285,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     const cv=gal[key], ctx=cv.getContext('2d'), cw=cv.width/COLS, ch=cv.height/ROWS; ctx.clearRect(0,0,cv.width,cv.height);
     ctx.fillStyle='#FAF4E8'; ctx.fillRect(0,0,cv.width,cv.height);
     const inS=new Set(STRAT[key].f(30));
-    apples.forEach(g=>{ ctx.beginPath(); ctx.arc(g.c*cw+cw/2,g.r*ch+ch/2,inS.has(g.i)?cw*0.42:cw*0.28,0,Math.PI*2); ctx.fillStyle=inS.has(g.i)?'#4F5D75':PLOT[g.p].col; ctx.globalAlpha=inS.has(g.i)?1:0.35; ctx.fill(); ctx.globalAlpha=1; });
+    apples.forEach(g=>{ ctx.beginPath(); ctx.arc(g.c*cw+cw/2,g.r*ch+ch/2,inS.has(g.i)?cw*0.42:cw*0.28,0,Math.PI*2); ctx.fillStyle=inS.has(g.i)?'#A34860':PLOT[g.p].col; ctx.globalAlpha=inS.has(g.i)?1:0.35; ctx.fill(); ctx.globalAlpha=1; });
     ctx.strokeStyle='#9A7B24'; ctx.lineWidth=1; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(cv.width/2,0); ctx.lineTo(cv.width/2,cv.height); ctx.moveTo(0,cv.height/2); ctx.lineTo(cv.width,cv.height/2); ctx.stroke(); ctx.setLineDash([]);
   }
   GAL.forEach(([key,label])=>{ const b=document.createElement('button'); b.type='button'; b.dataset.v=key; b.setAttribute('aria-pressed',String(key===$('strategy').value)); const cv=document.createElement('canvas'); cv.width=240; cv.height=150; cv.style.width='100%'; cv.style.height='auto'; cv.setAttribute('aria-hidden','true'); const sp=document.createElement('span'); sp.textContent=label; b.appendChild(cv); b.appendChild(sp); gal[key]=cv; drawMini(key);
@@ -296,9 +302,9 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     apples.forEach(g=>{ const x=g.c*cw+cw/2, y=g.r*ch+ch/2+1; const t=(g.w-WMIN)/(WMAX-WMIN); const rad=cw*0.33;
       pctx.strokeStyle='#637040'; pctx.lineWidth=1.2; pctx.beginPath(); pctx.moveTo(x,y-rad); pctx.lineTo(x+1.5,y-rad-4); pctx.stroke();
       pctx.beginPath(); pctx.arc(x,y,rad,0,Math.PI*2);
-      pctx.fillStyle=inS.has(g.i)?'#4F5D75':PLOT[g.p].col; pctx.globalAlpha=inS.has(g.i)?1:0.4+0.6*t; pctx.fill(); pctx.globalAlpha=1;
-      pctx.strokeStyle=inS.has(g.i)?'#2C1F14':'#9A7B24'; pctx.lineWidth=inS.has(g.i)?2:0.5; pctx.stroke();
-      if(weighed.has(g.i)){ pctx.fillStyle='#2C1F14'; pctx.font='11px IBM Plex Mono, monospace'; pctx.textAlign='center'; pctx.textBaseline='middle'; pctx.fillText(Math.round(g.w),x,y+1); } });
+      pctx.fillStyle=inS.has(g.i)?'#A34860':PLOT[g.p].col; pctx.globalAlpha=inS.has(g.i)?1:0.4+0.6*t; pctx.fill(); pctx.globalAlpha=1;
+      pctx.strokeStyle=inS.has(g.i)?'#FAF4E8':'#9A7B24'; pctx.lineWidth=inS.has(g.i)?2:0.5; pctx.stroke();
+      if(weighed.has(g.i)){ pctx.fillStyle='#4F5D75'; pctx.font='11px IBM Plex Mono, monospace'; pctx.textAlign='center'; pctx.textBaseline='middle'; pctx.fillText(Math.round(g.w),x,y+1); } });
     pctx.strokeStyle='#9A7B24'; pctx.lineWidth=1.5; pctx.setLineDash([6,6]);
     pctx.beginPath(); pctx.moveTo(pc.width/2,0); pctx.lineTo(pc.width/2,pc.height); pctx.moveTo(0,pc.height/2); pctx.lineTo(pc.width,pc.height/2); pctx.stroke(); pctx.setLineDash([]);
     pctx.fillStyle='#A34860'; pctx.font='22px Cormorant Garamond, serif'; pctx.textBaseline='top';
@@ -313,7 +319,7 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
     let msg=n.toLocaleString()+' of 1,000 weighed';
     if(n>=3&&n<10) msg+='. Notice how much the mean moves with each apple.';
     else if(n>=10&&n<25) msg+='. At a minute an apple, the full census is a working day.';
-    else if(n>=25) msg+='. A sample, drawn well, will do the job in minutes. Station II.';
+    else if(n>=25) msg+='. A sample, drawn well, will do the job in minutes. Scroll on.';
     $('weighFb').textContent=msg;
   }
   $('btnWeighReset').addEventListener('click',()=>{ weighed.clear(); renderWeigh(); drawPop(); });

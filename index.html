@@ -157,6 +157,12 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     <div class="fb" id="weighFb">0 of 1,000 weighed</div>
     <div class="row"><button type="button" class="btn" id="btnWeighReset">Put them back</button></div>
   </div>
+  <div class="step">
+    <h3>Law of large numbers</h3>
+    <p class="aux">As the sample size increases, the sample mean approximates the population mean.</p>
+    <p>The running mean above moves with every apple weighed and settles as the count grows. The chart below does the same for one simple random sample grown from 1 apple to 1,000: the mean of the sample approaches the mean of the orchard, and the approach is a matter of sample size, not of repeated sampling.</p>
+    <canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas>
+  </div>
   <span class="sign">Weigh a sample</span>
   <div class="row">
     <label for="strategy">Strategy</label>
@@ -217,12 +223,6 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     <p><span class="em">Shape.</span> The sample means are close to normal even though the weights in the orchard are skewed. The normal curve button lays the comparison over the histogram.</p>
     <p><span class="em">Spread.</span> The standard deviation of the sample means equals σ/√n: the standard deviation of all 1,000 apple weights, σ, divided by the square root of the sample size, n. Once the parameter is revealed, the boxes for sd of means and σ/√n should agree. Quadrupling the sample halves the spread.</p>
     <p class="aux">The three properties assume iid draws, independent and identically distributed: like a fair coin, each toss has no effect on the next and each has the same 50:50 chance. Trees and neighbours break independence, and the bell loses its shape.</p>
-  </div>
-  <div class="step">
-    <h3>Law of large numbers</h3>
-    <p class="aux">As the sample size increases, the sample mean approximates the population mean.</p>
-    <p class="aux">A different picture: one simple random sample grows from 1 apple to 1,000, and the running mean settles on the parameter.</p>
-    <canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas>
   </div>
 </section>
 

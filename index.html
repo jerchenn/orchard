@@ -120,16 +120,15 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 
 
 /* slide spacing: each block fills the window; arrow keys move between blocks */
-.wrap>header.frame,.wrap>section.frame{scroll-margin-top:16px;min-height:calc(100vh - 56px);align-content:center}
+.wrap>header.frame,.wrap>section.frame{scroll-margin-top:16px}
 .counter{position:fixed;right:16px;bottom:16px;z-index:9;font-family:var(--mono);font-size:11px;letter-spacing:.2em;padding:6px 12px;border:1px solid var(--trim);border-radius:999px;background:var(--label-bg);color:var(--rose)}
-@media (max-width:560px){.wrap>header.frame,.wrap>section.frame{min-height:0}}
+.credits{font-size:.72rem;color:var(--ink-warm);margin-top:18px}
 </style>
 
 <div class="wrap">
 
 <header class="frame butter" aria-label="Title">
   <div class="hero"><img src="img/arch.webp" alt="A tunnel of apple trees trained over iron arches, red apples hanging from the canopy, grass path beneath"></div>
-  <p class="aux credit">Photograph: BBC</p>
   <div class="title">
     <div class="small">Population and sample</div>
     <h1>Orchard Census</h1>
@@ -264,6 +263,8 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
   <p>On this page, what the sample could say about the orchard depended on how the apples were chosen. On the next page, what an opened door can say about the car depends on how the host chose the door. Same lesson, with one observation instead of a sample: evidence means nothing until you know the rule that produced the evidence.</p>
   <a class="btn primary" href="https://jerchenn.github.io/monty-hall/">Go to Monty Hall</a>
 </section>
+
+<p class="credits">Images: BBC</p>
 
 <footer><span><a href="https://jerchenn.github.io/drds/">Home</a></span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/ideas/">Big Ideas</a></span><span class="orn">✦</span><span>Orchard Census</span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/monty-hall/">Monty Hall</a></span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/stata/">The Do-File</a></span><span class="orn">✦</span><span><a href="https://jerchenn.github.io/designs/">Five Designs</a></span></footer>
 </div>

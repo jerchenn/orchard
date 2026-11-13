@@ -152,11 +152,13 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     <button type="button" class="btn" role="tab" id="tabRules" aria-selected="false" aria-controls="rules">The orchard</button>
   </div>
   <div class="tabpanel" id="rules" role="tabpanel" hidden>
-    <p>A village orchard holds 1,000 apples on the trees of four plots: the <span class="tip" data-tip="Population: a collection of persons, things, or objects under study">population</span>. The village wants the mean weight of all 1,000, a <span class="tip" data-tip="Parameter: a numerical characteristic of the whole population that can be estimated by a statistic">parameter</span>, but weighing every apple is slow, so a census taker weighs a <span class="tip" data-tip="Sample: a subset studied to gain information about the population">sample</span>. The weights written down are the <span class="tip" data-tip="Data: the result of sampling from a population">data</span>, weight is the <span class="tip" data-tip="Variable: a characteristic or measurement that can be determined for each member of a population">variable</span>, and the sample mean is a <span class="tip" data-tip="Statistic: a number that represents a property of the sample">statistic</span>. Hover any of those words for the definition. Draw the sample, describe the apples you weighed, then see what repeating the draw teaches.</p>
   <div class="matchbox">
     <p class="aux">Six terms. Click a term, then the definition that fits.</p>
     <div class="match" id="match"><div class="mcol" id="mTerms"></div><div class="mcol" id="mDefs"></div><svg class="mlines" id="mLines" aria-hidden="true"></svg></div>
     <div class="aux" id="mScore">0 of 6 matched</div>
+  </div>
+  <div id="blurb" hidden>
+    <p>A village orchard holds 1,000 apples on the trees of four plots: the <span class="tip" data-tip="Population: a collection of persons, things, or objects under study">population</span>. The village wants the mean weight of all 1,000, a <span class="tip" data-tip="Parameter: a numerical characteristic of the whole population that can be estimated by a statistic">parameter</span>, but weighing every apple is slow, so a census taker weighs a <span class="tip" data-tip="Sample: a subset studied to gain information about the population">sample</span>. The weights written down are the <span class="tip" data-tip="Data: the result of sampling from a population">data</span>, weight is the <span class="tip" data-tip="Variable: a characteristic or measurement that can be determined for each member of a population">variable</span>, and the sample mean is a <span class="tip" data-tip="Statistic: a number that represents a property of the sample">statistic</span>. Hover any of those words for the definition. Draw the sample, describe the apples you weighed, then see what repeating the draw teaches.</p>
   </div>
   </div>
 </header>
@@ -312,7 +314,7 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
       b.addEventListener('click',()=>{ if(b.classList.contains('done')) return; [...T.children].forEach(x=>x.setAttribute('aria-pressed','false')); sel=b; b.setAttribute('aria-pressed','true'); }); T.appendChild(b); });
     order().forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt'; b.textContent=PAIRS[i][1]; b.dataset.i=i;
       b.addEventListener('click',()=>{ if(b.classList.contains('done')||!sel) return;
-        if(sel.dataset.i===b.dataset.i){ const c=COLS[matched.length%COLS.length]; sel.classList.add('done'); b.classList.add('done'); sel.style.borderColor=c; b.style.borderColor=c; sel.setAttribute('aria-pressed','false'); matched.push([sel,b,c]); sel=null; $('mScore').textContent=matched.length+' of 6 matched'+(matched.length===6?'.':''); draw(); }
+        if(sel.dataset.i===b.dataset.i){ const c=COLS[matched.length%COLS.length]; sel.classList.add('done'); b.classList.add('done'); sel.style.borderColor=c; b.style.borderColor=c; sel.setAttribute('aria-pressed','false'); matched.push([sel,b,c]); sel=null; $('mScore').textContent=matched.length+' of 6 matched'+(matched.length===6?'.':''); if(matched.length===6) $('blurb').hidden=false; draw(); }
         else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),450); } }); D.appendChild(b); });
     function draw(){ const box=$('match').getBoundingClientRect(); L.setAttribute('viewBox','0 0 '+box.width+' '+box.height); L.innerHTML='';
       matched.forEach(([a,b,c])=>{ const ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect(); const x1=ra.right-box.left, y1=ra.top+ra.height/2-box.top, x2=rb.left-box.left, y2=rb.top+rb.height/2-box.top;

@@ -215,7 +215,7 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     <p>The histogram above is that sampling distribution, built from 1,000 draws. It has three properties, and each can be checked on this page.</p>
     <p><span class="em">Centre.</span> The sample means average out to the population mean. Once the parameter is revealed, the box for the mean of means should match that number.</p>
     <p><span class="em">Shape.</span> The sample means are close to normal even though the weights in the orchard are skewed. The normal curve button lays the comparison over the histogram.</p>
-    <p><span class="em">Spread.</span> The standard deviation of the sample means is σ/√n, the population standard deviation divided by the square root of the sample size. The boxes for sd of means and σ/√n should agree. Quadrupling the sample halves the spread.</p>
+    <p><span class="em">Spread.</span> The standard deviation of the sample means equals σ/√n: the standard deviation of all 1,000 apple weights, σ, divided by the square root of the sample size, n. Once the parameter is revealed, the boxes for sd of means and σ/√n should agree. Quadrupling the sample halves the spread.</p>
     <p class="aux">The three properties assume iid draws, independent and identically distributed: like a fair coin, each toss has no effect on the next and each has the same 50:50 chance. Trees and neighbours break independence, and the bell loses its shape.</p>
   </div>
   <div class="step">
@@ -406,7 +406,7 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     const normal=(showNormal&&revealed)?{m:MU,s:SIG/Math.sqrt(repN)}:null;
     histogram(mctx,mc,means,{lo:WMIN,hi:WMAX,bins:60,color:'#4F5D75',lines,normal,note:'sample mean, g · '+means.length+' draws of '+repN+' apples, '+repStrat});
     const items=[['draws',means.length],['apples per draw',repN],['mean of means, g',mm.toFixed(2)],['sd of means, g',ms.toFixed(2)]];
-    if(revealed) items.push(['bias, g',(mm-MU>=0?'+':'')+(mm-MU).toFixed(2)],['σ/√n, g',(SIG/Math.sqrt(repN)).toFixed(2)]);
+    if(revealed) items.push(['bias, g',(mm-MU>=0?'+':'')+(mm-MU).toFixed(2)],['σ/√n: population sd over √n, g',(SIG/Math.sqrt(repN)).toFixed(2)]);
     statBox('repStats',items);
     sdByN[repN]=ms;
     if(firstN===null){ firstN=repN; altN=repN<100?100:30; $('spreadQ').textContent='You drew 1,000 samples of '+firstN+' apples. If each sample had '+altN+' apples instead, would the sample means spread out more, the same, or less?'; $('spreadFb').textContent='Choose first, then change apples per sample and draw again.'; $('spreadAsk').hidden=false; }

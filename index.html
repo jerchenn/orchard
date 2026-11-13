@@ -157,11 +157,6 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     <div class="fb" id="weighFb">0 of 1,000 weighed</div>
     <div class="row"><button type="button" class="btn" id="btnWeighReset">Put them back</button></div>
   </div>
-  <div class="ask">
-    <div class="q">Three words for what you are looking at. Click a term, then its meaning.</div>
-    <div class="match"><div class="col" id="terms1"></div><div class="col" id="defs1"></div></div>
-    <div class="fb" id="score1">0 of 3 matched</div>
-  </div>
   <span class="sign">Weigh a sample</span>
   <div class="row">
     <label for="strategy">Strategy</label>
@@ -182,11 +177,6 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
   <div class="gallery" id="gallery" role="group" aria-label="Seven strategies, one example draw of 30 apples each"></div>
   <div class="pair one">
     <div class="cab cream"><span class="tag">Statistic</span><div class="big" id="sampMean">–<small>sample mean, g</small></div><div class="aux" id="sampN">no sample yet</div></div>
-  </div>
-  <div class="ask">
-    <div class="q">Three more words for what you just did. Click a term, then its meaning.</div>
-    <div class="match"><div class="col" id="terms2"></div><div class="col" id="defs2"></div></div>
-    <div class="fb" id="score2">0 of 3 matched</div>
   </div>
   <div class="ask">
     <div class="q">Which of the seven strategies are probability samples, where every apple has a known chance of being chosen? Select all that apply, then check.</div>
@@ -290,8 +280,6 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     shuffle(pairs.map((x,i)=>i)).forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt'; b.textContent=pairs[i][1]; b.dataset.i=i;
       b.addEventListener('click',()=>{ if(b.classList.contains('done')||!sel) return; if(sel.dataset.i===b.dataset.i){ sel.classList.add('done'); b.classList.add('done'); sel.setAttribute('aria-pressed','false'); sel=null; matched++; $(scoreId).textContent=matched+' of '+pairs.length+' matched'+(matched===pairs.length?'. All three.':''); } else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),500); } }); D.appendChild(b); });
   }
-  buildMatch([['Population','A collection of persons, things, or objects under study: here, all 1,000 apples'],['Variable','A characteristic or measurement that can be determined for each member of a population: here, weight'],['Parameter','A numerical characteristic of the whole population that can be estimated by a statistic: here, the mean weight of all 1,000']],'terms1','defs1','score1');
-  buildMatch([['Sample','A subset studied to gain information about the population: the apples weighed'],['Data','The result of sampling from a population: the weights written down'],['Statistic','A number that represents a property of the sample: its mean, which estimates the parameter']],'terms2','defs2','score2');
 
   // ---- population: 40 x 25, four plots, skewed weights in grams, fixed seed ----
   const COLS=40, ROWS=25, N=COLS*ROWS;

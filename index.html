@@ -186,28 +186,18 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
   </div>
 </section>
 
-<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Describe</span></div>
-
-<section class="frame butter" aria-label="Describe">
-  <span class="sign">Describe the sample</span>
-  <p class="aux">Descriptive statistics summarise data in a way that meaningful patterns might emerge.</p>
-  <canvas id="hist" width="1000" height="400" aria-label="Histogram of sampled weights"></canvas>
-  <div class="stats" id="stats"></div>
-  <p class="aux">Mode, median and mean are measures of centre. Range, quartiles, mean absolute deviation, variance and standard deviation are measures of spread.</p>
-</section>
-
-<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station III · Repeat</span></div>
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station II · Three results</span></div>
 
 <section class="frame blue" aria-label="Repeat">
   <span class="sign">Three results to carry around</span>
   <div class="step">
     <h3>Law of large numbers</h3>
     <p class="aux">As the sample size increases, the sample mean approximates the population mean.</p>
-    <p>One simple random sample grows from 1 apple to 1,000. Its mean approaches the mean of the orchard as the sample grows. The result concerns the size of one sample; the central limit theorem below concerns many samples of a fixed size.</p>
+    <p>This happened in Station I. With every apple weighed, the running mean moved less, and after a few dozen apples it had settled near one value. The chart below runs that experiment to the end: one simple random sample grows from 1 apple to 1,000, and its mean converges on the mean of the orchard. The result concerns one sample and how large it is.</p>
     <canvas id="lln" width="1000" height="300" aria-label="Running mean of one growing sample"></canvas>
   </div>
   <h3>Central limit theorem</h3>
-  <p class="aux">The strategy is the one chosen above. Each draw gives one sample mean. The histogram collects them.</p>
+  <p>The second result concerns many samples of one fixed size. Hold the size at 30 and draw the sample 1,000 times with the strategy chosen above. Each draw gives a different mean, and the histogram collects them.</p>
   <div class="row"><label for="nRep">Apples per sample</label><select id="nRep"><option>10</option><option selected>30</option><option>100</option><option>300</option></select><button type="button" class="btn primary" id="btnRepeat">Draw 1,000 samples</button><button type="button" class="btn" id="btnNormal" aria-pressed="false">Lay the normal curve over</button></div>
   <canvas id="means" width="1000" height="400" aria-label="Histogram of sample means across repeated draws"></canvas>
   <div class="stats" id="repStats"></div>
@@ -218,12 +208,24 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
   </div>
   <div class="step">
     <p class="aux">The sampling distribution of the sample means approaches a normal distribution as the sample size gets larger.</p>
-    <p>The histogram above is that sampling distribution, built from 1,000 draws. It has three properties, and each can be checked on this page.</p>
+    <p>The histogram above is that sampling distribution. Three things hold for it, and each can be checked on this page.</p>
     <p><span class="em">Centre.</span> The sample means average out to the population mean. Once the parameter is revealed, the box for the mean of means should match that number.</p>
     <p><span class="em">Shape.</span> The sample means are close to normal even though the weights in the orchard are skewed. The normal curve button lays the comparison over the histogram.</p>
     <p><span class="em">Spread.</span> The standard deviation of the sample means equals σ/√n: the standard deviation of all 1,000 apple weights, σ, divided by the square root of the sample size, n. Once the parameter is revealed, the boxes for sd of means and σ/√n should agree. Quadrupling the sample halves the spread.</p>
-    <p class="aux">The three properties assume iid draws, independent and identically distributed: like a fair coin, each toss has no effect on the next and each has the same 50:50 chance. Trees and neighbours break independence, and the bell loses its shape.</p>
+    <h3>iid</h3>
+    <p class="aux">Independent and identically distributed: like a fair coin, each toss has no effect on the next, and each has the same 50:50 chance.</p>
+    <p>Both results above assume iid draws, and the strategy menu in Station I is where that assumption is kept or broken. Simple random sampling draws each apple independently from the same orchard. Clustering by tree breaks independence: apples on one tree resemble one another, so 30 apples from a few trees carry less information than 30 drawn singly, and the bell widens. Convenience sampling breaks the second half: the apples by the gate come from a different population than the orchard, so the bell shifts away from the parameter and no sample size brings it back. Change the strategy in Station I and draw 1,000 samples again to see each of these.</p>
   </div>
+</section>
+
+<div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station III · Describe</span></div>
+
+<section class="frame butter" aria-label="Describe">
+  <span class="sign">Describe the sample</span>
+  <p class="aux">Descriptive statistics summarise data in a way that meaningful patterns might emerge.</p>
+  <canvas id="hist" width="1000" height="400" aria-label="Histogram of sampled weights"></canvas>
+  <div class="stats" id="stats"></div>
+  <p class="aux">Mode, median and mean are measures of centre. Range, quartiles, mean absolute deviation, variance and standard deviation are measures of spread.</p>
 </section>
 
 <div class="node"><div class="stem"></div><div class="dot"></div><span class="tag">Station IV · Infer</span></div>

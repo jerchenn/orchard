@@ -125,6 +125,18 @@ footer a{color:var(--neutral);text-decoration:none;border-bottom:1px solid var(-
 .credits{font-size:.72rem;color:var(--ink-warm);margin-top:18px}
 footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.16em;opacity:.75;margin-top:4px}
 .ucam{width:130px;display:block;margin:22px auto 0;opacity:.9}
+
+/* matching */
+.matchbox{width:100%;max-width:680px;display:grid;gap:12px;justify-items:center;position:relative;padding-top:6px}
+.match{position:relative;display:grid;grid-template-columns:1fr 1.6fr;gap:14px 56px;width:100%;align-items:stretch}
+.mcol{display:grid;gap:10px;align-content:start}
+.mt{font:inherit;text-align:left;padding:10px 14px;border:1px solid var(--trim);border-radius:10px;background:var(--neutral);color:var(--ink);cursor:pointer;font-size:.98rem;line-height:1.35;position:relative;z-index:1}
+.mt.term{text-transform:uppercase;letter-spacing:.14em;font-size:.82rem;color:var(--rose);text-align:center;align-self:center}
+.mt[aria-pressed="true"]{background:var(--butter);border-color:var(--trim-dk)}
+.mt.done{cursor:default;border-width:2px}
+.mt.shake{background:var(--pink)}
+.mlines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+@media (max-width:560px){.match{grid-template-columns:1fr;gap:10px}.mlines{display:none}}
 </style>
 
 <div class="wrap">
@@ -141,6 +153,11 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
   </div>
   <div class="tabpanel" id="rules" role="tabpanel" hidden>
     <p>A village orchard holds 1,000 apples on the trees of four plots: the <span class="tip" data-tip="Population: a collection of persons, things, or objects under study">population</span>. The village wants the mean weight of all 1,000, a <span class="tip" data-tip="Parameter: a numerical characteristic of the whole population that can be estimated by a statistic">parameter</span>, but weighing every apple is slow, so a census taker weighs a <span class="tip" data-tip="Sample: a subset studied to gain information about the population">sample</span>. The weights written down are the <span class="tip" data-tip="Data: the result of sampling from a population">data</span>, weight is the <span class="tip" data-tip="Variable: a characteristic or measurement that can be determined for each member of a population">variable</span>, and the sample mean is a <span class="tip" data-tip="Statistic: a number that represents a property of the sample">statistic</span>. Hover any of those words for the definition. Draw the sample, describe the apples you weighed, then see what repeating the draw teaches.</p>
+  <div class="matchbox">
+    <p class="aux">Six terms. Click a term, then the definition that fits.</p>
+    <div class="match" id="match"><div class="mcol" id="mTerms"></div><div class="mcol" id="mDefs"></div><svg class="mlines" id="mLines" aria-hidden="true"></svg></div>
+    <div class="aux" id="mScore">0 of 6 matched</div>
+  </div>
   </div>
 </header>
 
@@ -215,6 +232,7 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
     <h3>iid</h3>
     <p class="aux">Independent and identically distributed: like a fair coin, each toss has no effect on the next, and each has the same 50:50 chance.</p>
     <p>Both results above assume iid draws, and the strategy menu in Station I is where that assumption is kept or broken. Simple random sampling draws each apple independently from the same orchard. Clustering by tree breaks independence: apples on one tree resemble one another, so 30 apples from a few trees carry less information than 30 drawn singly, and the bell widens. Convenience sampling breaks the second half: the apples by the gate come from a different population than the orchard, so the bell shifts away from the parameter and no sample size brings it back. Change the strategy in Station I and draw 1,000 samples again to see each of these.</p>
+    <p><span class="em">For a research design.</span> The law of large numbers says a larger sample buys precision; the central limit theorem is why a regression table can report standard errors and confidence intervals from a modest sample; iid says both depend on how the sample was drawn. A clustered design needs clustered standard errors, a stratified one needs weights, and a convenience sample cannot be repaired by size.</p>
   </div>
 </section>
 
@@ -283,6 +301,24 @@ footer .made{flex-basis:100%;text-align:center;font-size:.62rem;letter-spacing:.
       b.addEventListener('click',()=>{ if(b.classList.contains('done')||!sel) return; if(sel.dataset.i===b.dataset.i){ sel.classList.add('done'); b.classList.add('done'); sel.setAttribute('aria-pressed','false'); sel=null; matched++; $(scoreId).textContent=matched+' of '+pairs.length+' matched'+(matched===pairs.length?'. All three.':''); } else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),500); } }); D.appendChild(b); });
   }
 
+
+  // ---- matching: six terms, lines drawn between matched pairs ----
+  (function(){
+    const PAIRS=[['Population','A collection of persons, things, or objects under study'],['Sample','A subset studied to gain information about the population'],['Data','The result of sampling from a population'],['Statistic','A number that represents a property of the sample'],['Parameter','A numerical characteristic of the whole population that can be estimated by a statistic'],['Variable','A characteristic or measurement that can be determined for each member of a population']];
+    const COLS=['#A34860','#637040','#4F5D75','#9A7B24','#BFA0AC','#5B8FC0'];
+    const T=$('mTerms'), D=$('mDefs'), L=$('mLines'); let sel=null, matched=[];
+    const order=i=>{ const a=PAIRS.map((_,k)=>k); for(let k=a.length-1;k>0;k--){ const m=rnd(k+1); [a[k],a[m]]=[a[m],a[k]]; } return a; };
+    order().forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt term'; b.textContent=PAIRS[i][0]; b.dataset.i=i; b.setAttribute('aria-pressed','false');
+      b.addEventListener('click',()=>{ if(b.classList.contains('done')) return; [...T.children].forEach(x=>x.setAttribute('aria-pressed','false')); sel=b; b.setAttribute('aria-pressed','true'); }); T.appendChild(b); });
+    order().forEach(i=>{ const b=document.createElement('button'); b.type='button'; b.className='mt'; b.textContent=PAIRS[i][1]; b.dataset.i=i;
+      b.addEventListener('click',()=>{ if(b.classList.contains('done')||!sel) return;
+        if(sel.dataset.i===b.dataset.i){ const c=COLS[matched.length%COLS.length]; sel.classList.add('done'); b.classList.add('done'); sel.style.borderColor=c; b.style.borderColor=c; sel.setAttribute('aria-pressed','false'); matched.push([sel,b,c]); sel=null; $('mScore').textContent=matched.length+' of 6 matched'+(matched.length===6?'.':''); draw(); }
+        else { b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),450); } }); D.appendChild(b); });
+    function draw(){ const box=$('match').getBoundingClientRect(); L.setAttribute('viewBox','0 0 '+box.width+' '+box.height); L.innerHTML='';
+      matched.forEach(([a,b,c])=>{ const ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect(); const x1=ra.right-box.left, y1=ra.top+ra.height/2-box.top, x2=rb.left-box.left, y2=rb.top+rb.height/2-box.top;
+        const path=document.createElementNS('http://www.w3.org/2000/svg','path'); path.setAttribute('d','M'+x1+' '+y1+' C '+(x1+28)+' '+y1+', '+(x2-28)+' '+y2+', '+x2+' '+y2); path.setAttribute('stroke',c); path.setAttribute('stroke-width','2'); path.setAttribute('fill','none'); L.appendChild(path); }); }
+    window.addEventListener('resize',draw);
+  })();
   // ---- population: 40 x 25, four plots, skewed weights in grams, fixed seed ----
   const COLS=40, ROWS=25, N=COLS*ROWS;
   let seed=20261112; const srand=()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
